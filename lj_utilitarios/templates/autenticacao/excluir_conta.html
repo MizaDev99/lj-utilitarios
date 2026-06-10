@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Excluir Conta — {{ config.nome_loja }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding:40px 16px 80px; max-width:500px;">
+    <div class="dark-card" style="border-color:rgba(255,61,61,.25);">
+        <div style="text-align:center; padding:16px 0 24px;">
+            <div style="font-size:56px; margin-bottom:12px;">⚠️</div>
+            <h1 style="font-size:22px; font-weight:800; margin-bottom:8px;">Excluir Minha Conta</h1>
+            <p style="color:var(--cor-texto-suave); font-size:14px; line-height:1.6;">
+                Esta ação é <strong style="color:#FF3D3D;">irreversível</strong>. Seus dados pessoais
+                serão removidos e os pedidos serão anonimizados (número do pedido mantido, sem dados pessoais).
+            </p>
+        </div>
+
+        <div style="background:rgba(255,61,61,.06); border:1px solid rgba(255,61,61,.2); border-radius:8px; padding:14px 16px; margin-bottom:20px;">
+            <p style="font-size:13px; color:#FF8080; line-height:1.5;">
+                <strong>O que será removido:</strong><br>
+                ✗ Seu perfil (nome, e-mail, telefone, foto)<br>
+                ✗ Dados de entrega nos pedidos<br>
+                ✗ Credenciais de acesso<br>
+                ✓ Números de pedido são mantidos (anonimizados)
+            </p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Para confirmar, digite <strong style="color:#FF3D3D;">CONFIRMAR</strong></label>
+                <input type="text" name="confirmacao" class="fc"
+                       placeholder="Digite: CONFIRMAR" autocomplete="off" required>
+            </div>
+            {% if messages %}
+            {% for msg in messages %}
+            <p class="form-error" style="margin-bottom:12px;">{{ msg }}</p>
+            {% endfor %}
+            {% endif %}
+            <div style="display:flex; gap:12px; margin-top:20px;">
+                <button type="submit"
+                        style="flex:1; background:linear-gradient(135deg,#CC0000,#FF3D3D); color:#fff; border:none; padding:13px; border-radius:8px; font-weight:700; cursor:pointer;">
+                    🗑️ Excluir minha conta
+                </button>
+                <a href="{% url 'autenticacao:perfil' %}"
+                   style="flex:1; text-align:center; padding:13px; border-radius:8px; background:rgba(77,106,255,.08); border:1px solid var(--cor-borda); color:var(--cor-texto); font-weight:600;">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

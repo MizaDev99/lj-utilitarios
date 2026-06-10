@@ -1,0 +1,81 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block nav_dashboard %}ativo{% endblock %}
+
+{% block content %}
+<div class="cards-grid">
+    <div class="stat-card stat-azul">
+        <div class="stat-icone">📦</div>
+        <div class="stat-info">
+            <span class="stat-valor">{{ pedidos_hoje }}</span>
+            <span class="stat-label">Pedidos Hoje</span>
+        </div>
+    </div>
+    <div class="stat-card stat-amarelo">
+        <div class="stat-icone">⏳</div>
+        <div class="stat-info">
+            <span class="stat-valor">{{ pedidos_pendentes }}</span>
+            <span class="stat-label">Aguardando</span>
+        </div>
+    </div>
+    <div class="stat-card stat-verde">
+        <div class="stat-icone">💰</div>
+        <div class="stat-info">
+            <span class="stat-valor">R$ {{ faturamento_mes|floatformat:2 }}</span>
+            <span class="stat-label">Faturamento do Mês</span>
+        </div>
+    </div>
+    <div class="stat-card stat-laranja">
+        <div class="stat-icone">🏷️</div>
+        <div class="stat-info">
+            <span class="stat-valor">{{ produtos_ativos }}</span>
+            <span class="stat-label">Produtos Ativos</span>
+        </div>
+    </div>
+</div>
+
+<div class="painel-section">
+    <div class="section-header-painel">
+        <h2 class="section-titulo-painel">Pedidos Recentes</h2>
+        <a href="{% url 'painel:pedidos' %}" class="btn btn-sm btn-outline">Ver todos</a>
+    </div>
+    <div class="table-wrap">
+        <table class="tabela">
+            <thead>
+                <tr>
+                    <th>Pedido</th>
+                    <th>Cliente</th>
+                    <th>Cidade</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedido in pedidos_recentes %}
+                <tr>
+                    <td><strong>#{{ pedido.numero_pedido }}</strong></td>
+                    <td>{{ pedido.nome_cliente }}</td>
+                    <td>{{ pedido.cidade_cliente }}</td>
+                    <td>R$ {{ pedido.total|floatformat:2 }}</td>
+                    <td>
+                        <span class="status-badge" style="background:{{ pedido.get_status_display_color }}20; color:{{ pedido.get_status_display_color }}; border:1px solid {{ pedido.get_status_display_color }};">
+                            {{ pedido.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ pedido.criado_em|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'painel:pedido_detalhe' pedido.pk %}" class="btn btn-sm btn-outline">Ver</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="text-center">Nenhum pedido ainda.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

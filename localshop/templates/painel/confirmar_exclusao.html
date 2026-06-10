@@ -1,0 +1,20 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block title %}Confirmar Exclusão{% endblock %}
+{% block page_title %}Confirmar Exclusão{% endblock %}
+
+{% block content %}
+<div class="form-painel-card" style="max-width:480px;">
+    <div style="text-align:center; padding: 24px 0;">
+        <div style="font-size:48px; margin-bottom:16px;">⚠️</div>
+        <h2 style="margin-bottom:8px;">Confirmar Exclusão</h2>
+        <p style="color:#6B7280;">Tem certeza que deseja excluir <strong>{{ objeto }}</strong>?</p>
+        <p style="color:#EF4444; font-size:14px;">Esta ação não pode ser desfeita.</p>
+    </div>
+    <form method="post" style="display:flex; gap:12px; justify-content:center;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sim, excluir</button>
+        <a href="{{ cancel_url }}" class="btn btn-outline">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

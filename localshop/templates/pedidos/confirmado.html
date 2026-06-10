@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Pedido Confirmado — {{ config.nome_loja }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 64px 16px; text-align: center;">
+    <div class="confirmado-card">
+        <div class="confirmado-icon">✅</div>
+        <h1 class="confirmado-titulo">Pedido Realizado!</h1>
+        <p class="confirmado-sub">Obrigado, <strong>{{ pedido.nome_cliente }}</strong>!</p>
+        <p class="confirmado-numero">Número do Pedido: <strong>#{{ pedido.numero_pedido }}</strong></p>
+        <p class="confirmado-info">Seu pedido foi registrado e estamos aguardando a confirmação.</p>
+
+        <div class="confirmado-detalhes">
+            <div class="confirmado-linha">
+                <span>Cidade:</span><span>{{ pedido.cidade_cliente }}</span>
+            </div>
+            <div class="confirmado-linha">
+                <span>Endereço:</span><span>{{ pedido.endereco_cliente }}</span>
+            </div>
+            <div class="confirmado-linha">
+                <span>Total:</span><span><strong>R$ {{ pedido.total|floatformat:2 }}</strong></span>
+            </div>
+        </div>
+
+        <a href="{% url 'core:homepage' %}" class="btn btn-primary" style="margin-top: 32px;">
+            Continuar Comprando
+        </a>
+    </div>
+</div>
+{% endblock %}

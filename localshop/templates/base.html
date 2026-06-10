@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ config.nome_loja }}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        :root {
+            --cor-primaria: {{ config.cor_primaria|default:'#FF6B00' }};
+            --cor-primaria-dark: #e55e00;
+            --cor-primaria-light: #fff3ec;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<header class="header">
+    <div class="header-top">
+        <div class="container header-inner">
+            <a href="{% url 'core:homepage' %}" class="logo">
+                {% if config.logo %}
+                    <img src="{{ config.logo.url }}" alt="{{ config.nome_loja }}" class="logo-img">
+                {% else %}
+                    <span class="logo-text">{{ config.nome_loja }}</span>
+                {% endif %}
+            </a>
+
+            <form class="search-form" action="{% url 'produtos:lista' %}" method="get">
+                <input type="text" name="q" class="search-input"
+                       placeholder="Buscar produtos..."
+                       value="{{ request.GET.q }}">
+                <button type="submit" class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                    </svg>
+                </button>
+            </form>
+
+            <a href="{% url 'carrinho:ver' %}" class="cart-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                {% if carrinho_total_itens > 0 %}
+                <span class="cart-badge">{{ carrinho_total_itens }}</span>
+                {% endif %}
+            </a>
+        </div>
+    </div>
+
+    <nav class="nav-categorias">
+        <div class="container">
+            <ul class="nav-list">
+                <li><a href="{% url 'produtos:lista' %}" class="nav-item">Todos</a></li>
+                {% for cat in categorias_nav %}
+                <li>
+                    <a href="{% url 'produtos:lista' %}?categoria={{ cat.slug }}" class="nav-item">
+                        {% if cat.icone %}{{ cat.icone }} {% endif %}{{ cat.nome }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main class="main-content">
+    {% if messages %}
+    <div class="container">
+        {% for msg in messages %}
+        <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <h3 class="footer-title">{{ config.nome_loja }}</h3>
+                <p class="footer-text">Compras locais, entrega rápida.</p>
+                {% if config.cidade_base %}
+                <p class="footer-text">📍 {{ config.cidade_base }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <h4 class="footer-subtitle">Categorias</h4>
+                <ul class="footer-links">
+                    {% for cat in categorias_nav %}
+                    <li><a href="{% url 'produtos:lista' %}?categoria={{ cat.slug }}">{{ cat.nome }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-subtitle">Links</h4>
+                <ul class="footer-links">
+                    <li><a href="{% url 'core:homepage' %}">Início</a></li>
+                    <li><a href="{% url 'produtos:lista' %}">Produtos</a></li>
+                    <li><a href="{% url 'carrinho:ver' %}">Carrinho</a></li>
+                </ul>
+            </div>
+            {% if config.whatsapp_numero %}
+            <div>
+                <h4 class="footer-subtitle">Contato</h4>
+                <a href="https://wa.me/55{{ config.whatsapp_numero }}" class="whatsapp-link" target="_blank">
+                    📱 WhatsApp
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; {{ config.nome_loja }} — Todos os direitos reservados</p>
+        </div>
+    </div>
+</footer>
+
+<script src="{% static 'js/carrinho.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

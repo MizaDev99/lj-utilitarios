@@ -1,0 +1,42 @@
+<article class="prod-card">
+    <div class="aurora-bar"></div>
+    <a href="{% url 'produtos:detalhe' produto.slug %}" class="prod-card-img-link">
+        <div class="prod-card-img-wrap">
+            {% if produto.imagem_principal %}
+            <img src="{{ produto.imagem_principal.url }}" alt="{{ produto.nome }}" class="prod-card-img" loading="lazy">
+            {% else %}
+            <div class="prod-card-no-img">🔧</div>
+            {% endif %}
+            {% if produto.tem_promocao %}
+            <span class="badge-oferta">-{{ produto.percentual_desconto }}%</span>
+            {% elif produto.estoque == 0 %}
+            <span class="badge-esgotado">ESGOTADO</span>
+            {% endif %}
+        </div>
+    </a>
+    <div class="prod-card-body">
+        {% if produto.categoria %}
+        <span class="prod-cat-pill">{{ produto.categoria.icone }} {{ produto.categoria.nome }}</span>
+        {% endif %}
+        <a href="{% url 'produtos:detalhe' produto.slug %}">
+            <h3 class="prod-card-nome">{{ produto.nome }}</h3>
+        </a>
+        <div class="prod-card-preco">
+            {% if produto.tem_promocao %}
+            <span class="preco-de">R$ {{ produto.preco }}</span>
+            <span class="preco-por">R$ {{ produto.preco_promocional }}</span>
+            {% else %}
+            <span class="preco-por">R$ {{ produto.preco }}</span>
+            {% endif %}
+        </div>
+        {% if produto.estoque > 0 %}
+        <form method="post" action="{% url 'carrinho:adicionar' produto.pk %}" class="add-cart-form">
+            {% csrf_token %}
+            <input type="hidden" name="quantidade" value="1">
+            <button type="submit" class="btn-add-cart">+ Adicionar</button>
+        </form>
+        {% else %}
+        <button class="btn-add-cart" disabled>Esgotado</button>
+        {% endif %}
+    </div>
+</article>

@@ -1,0 +1,51 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block title %}Categorias{% endblock %}
+{% block page_title %}Categorias{% endblock %}
+{% block nav_categorias %}ativo{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'painel:categoria_criar' %}" class="btn btn-primary">+ Nova Categoria</a>
+{% endblock %}
+
+{% block content %}
+<div class="painel-section">
+    <div class="table-wrap">
+        <table class="tabela">
+            <thead>
+                <tr>
+                    <th>Ícone</th>
+                    <th>Nome</th>
+                    <th>Slug</th>
+                    <th>Produtos</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cat in categorias %}
+                <tr>
+                    <td style="font-size:24px;">{{ cat.icone|default:"🏷️" }}</td>
+                    <td><strong>{{ cat.nome }}</strong></td>
+                    <td><code>{{ cat.slug }}</code></td>
+                    <td>{{ cat.produtos.count }}</td>
+                    <td>
+                        {% if cat.ativo %}
+                        <span class="status-badge" style="background:#D1FAE5;color:#065F46;border:1px solid #10B981;">Ativa</span>
+                        {% else %}
+                        <span class="status-badge" style="background:#FEE2E2;color:#991B1B;border:1px solid #EF4444;">Inativa</span>
+                        {% endif %}
+                    </td>
+                    <td class="acoes-col">
+                        <a href="{% url 'painel:categoria_editar' cat.pk %}" class="btn btn-sm btn-outline">Editar</a>
+                        <a href="{% url 'painel:categoria_deletar' cat.pk %}" class="btn btn-sm btn-danger">Excluir</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center">Nenhuma categoria ainda.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

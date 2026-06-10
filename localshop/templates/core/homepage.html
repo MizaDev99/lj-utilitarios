@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ config.nome_loja }} — Compras Locais{% endblock %}
+
+{% block content %}
+
+{% if config.banner_principal or config.texto_banner %}
+<section class="hero-banner" {% if config.banner_principal %}style="background-image: url('{{ config.banner_principal.url }}');"{% endif %}>
+    <div class="hero-overlay">
+        <div class="container hero-content">
+            <h1 class="hero-title">{{ config.texto_banner|default:'Bem-vindo à nossa loja!' }}</h1>
+            <a href="{% url 'produtos:lista' %}" class="btn btn-hero">Ver Produtos</a>
+        </div>
+    </div>
+</section>
+{% else %}
+<section class="hero-banner hero-default">
+    <div class="hero-overlay">
+        <div class="container hero-content">
+            <h1 class="hero-title">As melhores ofertas da sua cidade!</h1>
+            <p class="hero-sub">Produtos locais com entrega rápida</p>
+            <a href="{% url 'produtos:lista' %}" class="btn btn-hero">Ver Todos os Produtos</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if categorias %}
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Categorias</h2>
+        <div class="categorias-grid">
+            {% for cat in categorias %}
+            <a href="{% url 'produtos:lista' %}?categoria={{ cat.slug }}" class="categoria-card">
+                <span class="categoria-icone">{{ cat.icone|default:'🏷️' }}</span>
+                <span class="categoria-nome">{{ cat.nome }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if ofertas %}
+<section class="section section-ofertas">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">🔥 Ofertas</h2>
+            <a href="{% url 'produtos:lista' %}?ordem=menor_preco" class="ver-mais">Ver mais →</a>
+        </div>
+        <div class="produtos-grid">
+            {% for produto in ofertas %}
+            {% include 'produtos/_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if destaques %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">⭐ Destaques</h2>
+            <a href="{% url 'produtos:lista' %}" class="ver-mais">Ver mais →</a>
+        </div>
+        <div class="produtos-grid">
+            {% for produto in destaques %}
+            {% include 'produtos/_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if recentes %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">🆕 Novidades</h2>
+            <a href="{% url 'produtos:lista' %}?ordem=mais_novo" class="ver-mais">Ver mais →</a>
+        </div>
+        <div class="produtos-grid">
+            {% for produto in recentes %}
+            {% include 'produtos/_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

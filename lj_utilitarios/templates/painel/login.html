@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — LJ Utilitários</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/painel.css' %}">
+</head>
+<body class="login-page">
+    <div class="login-wrap">
+        <div class="login-card">
+            <div class="login-brand">
+                <span class="login-logo-text">LJ</span>
+                <h1 class="login-title">LJ Utilitários</h1>
+                <p class="login-sub">Painel Administrativo</p>
+            </div>
+
+            {% if messages %}
+            {% for msg in messages %}
+            <div class="alert alert-error">{{ msg }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="form-label">Usuário</label>
+                    <input type="text" name="username" class="fc" placeholder="admin" autofocus required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" name="password" class="fc" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-login">Entrar no Painel</button>
+            </form>
+            <p style="text-align:center; margin-top:20px;">
+                <a href="{% url 'core:homepage' %}" style="color:var(--cor-texto-suave); font-size:13px;">← Voltar à loja</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block title %}Pedido #{{ pedido.numero_pedido }}{% endblock %}
+{% block page_title %}Pedido #{{ pedido.numero_pedido }}{% endblock %}
+{% block nav_ped %}ativo{% endblock %}
+{% block topbar_actions %}<a href="{% url 'painel:pedidos' %}" class="btn btn-outline">← Voltar</a>{% endblock %}
+
+{% block content %}
+<div class="detalhe-grid">
+    <div>
+        <div class="p-card">
+            <h3 class="p-card-h">👤 Cliente</h3>
+            <div class="d-row"><span>Nome</span><strong>{{ pedido.nome_cliente }}</strong></div>
+            <div class="d-row"><span>Telefone</span><strong>{{ pedido.telefone_cliente }}</strong></div>
+            <div class="d-row"><span>Cidade</span><strong>{{ pedido.cidade_cliente }}</strong></div>
+            <div class="d-row"><span>Endereço</span><strong>{{ pedido.endereco_cliente }}</strong></div>
+            {% if pedido.observacoes %}<div class="d-row"><span>Obs</span><strong>{{ pedido.observacoes }}</strong></div>{% endif %}
+            <div class="d-row"><span>Data</span><strong>{{ pedido.criado_em|date:"d/m/Y H:i" }}</strong></div>
+        </div>
+
+        <div class="p-card" style="margin-top:16px;">
+            <h3 class="p-card-h">🛒 Itens</h3>
+            <table class="tabela">
+                <thead><tr><th>Produto</th><th>Qtd</th><th>Unitário</th><th>Subtotal</th></tr></thead>
+                <tbody>
+                    {% for item in pedido.itens.all %}
+                    <tr>
+                        <td>{{ item.nome_produto }}</td>
+                        <td>{{ item.quantidade }}</td>
+                        <td>R$ {{ item.preco_unitario|floatformat:2 }}</td>
+                        <td>R$ {{ item.subtotal|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr><td colspan="3">Subtotal</td><td>R$ {{ pedido.subtotal|floatformat:2 }}</td></tr>
+                    <tr><td colspan="3">Frete</td><td>{% if pedido.frete == 0 %}<span style="color:#00C48C;">Grátis</span>{% else %}R$ {{ pedido.frete|floatformat:2 }}{% endif %}</td></tr>
+                    <tr><td colspan="3"><strong>Total</strong></td><td><strong>R$ {{ pedido.total|floatformat:2 }}</strong></td></tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div>
+        <div class="p-card">
+            <h3 class="p-card-h">📊 Status</h3>
+            <div style="margin-bottom:16px;">
+                <span class="status-badge status-badge-lg" style="background:{{ pedido.get_status_cor }}22;color:{{ pedido.get_status_cor }};border:1px solid {{ pedido.get_status_cor }};">
+                    {{ pedido.get_status_display }}
+                </span>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group"><label class="form-label">Alterar status</label>{{ form.status }}</div>
+                <button type="submit" class="btn btn-primary btn-block">Atualizar</button>
+            </form>
+        </div>
+
+        <div class="p-card" style="margin-top:16px;">
+            <h3 class="p-card-h">📱 Contato</h3>
+            <a href="https://wa.me/55{{ pedido.telefone_cliente|cut:' '|cut:'-'|cut:'('|cut:')' }}" class="btn btn-whatsapp btn-block" target="_blank">
+                💬 WhatsApp do Cliente
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Meus Dados — {{ config.nome_loja }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding:32px 16px 80px; max-width:800px;">
+    <h1 class="page-h1">📊 Meus Dados Pessoais</h1>
+    <p style="color:var(--cor-texto-suave); margin-bottom:24px;">
+        Conforme a LGPD (Lei nº 13.709/2018), abaixo estão todos os dados que armazenamos sobre você.
+    </p>
+
+    <div class="dark-card">
+        <h3 class="card-titulo">Dados armazenados</h3>
+        <pre class="dados-pre">{{ dados|pprint }}</pre>
+    </div>
+
+    <div class="privacidade-section">
+        <h3>🔐 Exercer meus direitos</h3>
+        <p style="color:var(--cor-texto-suave); font-size:14px;">
+            Você pode corrigir seus dados ou solicitar a exclusão total da sua conta.
+        </p>
+        <div class="privacidade-btns">
+            <a href="{% url 'autenticacao:perfil' %}" class="btn btn-outline-light">
+                ✏️ Corrigir meus dados
+            </a>
+            <a href="{% url 'autenticacao:excluir_conta' %}" class="btn"
+               style="background:rgba(255,61,61,.1);color:#FF3D3D;border:1px solid rgba(255,61,61,.3);">
+                🗑️ Excluir minha conta
+            </a>
+        </div>
+    </div>
+
+    <p style="color:var(--cor-texto-suave); font-size:13px; margin-top:24px;">
+        Para exportar ou solicitar portabilidade dos seus dados, entre em contato via WhatsApp.
+        <a href="{% url 'core:privacidade' %}" class="link-lgpd">Saiba mais → Política de Privacidade</a>
+    </p>
+</div>
+{% endblock %}

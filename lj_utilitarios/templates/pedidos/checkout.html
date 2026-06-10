@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Finalizar Compra — {{ config.nome_loja }}{% endblock %}
+
+{% block extra_head %}
+<script>
+    const FRETE_URL = "{% url 'pedidos:calcular_frete' %}";
+    const PIX_CHAVE = "{{ config.chave_pix|escapejs }}";
+    const PIX_TIPO  = "{{ config.get_tipo_pix_label|escapejs }}";
+    const SUBTOTAL  = {{ subtotal|floatformat:2 }};
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:32px; padding-bottom:64px;">
+    <h1 class="page-h1">Finalizar Compra</h1>
+
+    <div class="checkout-layout">
+        <div class="checkout-form-col">
+            <form method="post" action="{% url 'pedidos:finalizar' %}" id="checkout-form">
+                {% csrf_token %}
+
+                <!-- 1. Dados Pessoais -->
+                <div class="co-section">
+                    <div class="aurora-bar aurora-bar-1"></div>
+                    <h3 class="co-section-h"><span class="co-step">1</span> Seus Dados</h3>
+                    <div class="co-section-body">
+                        <div class="form-group">
+                            <label class="form-label">Nome Completo</label>
+                            {{ form.nome_cliente }}
+                            {% if form.nome_cliente.errors %}<p class="form-error">{{ form.nome_cliente.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Telefone / WhatsApp</label>
+                            {{ form.telefone_cliente }}
+                            {% if form.telefone_cliente.errors %}<p class="form-error">{{ form.telefone_cliente.errors.0 }}</p>{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Forma de Recebimento -->
+                <div class="co-section">
+                    <div class="aurora-bar aurora-bar-2"></div>
+                    <h3 class="co-section-h"><span class="co-step">2</span> Como quer receber?</h3>
+                    <div class="co-section-body">
+                        <div class="radio-group">
+                            <label class="radio-opt" id="opt-entrega">
+                                <input type="radio" name="forma_recebimento" value="entrega" checked onchange="handleRecebimento('entrega')">
+                                <div class="radio-content">
+                                    <span class="radio-icon">🚚</span>
+                                    <div><strong>Entrega no meu endereço</strong><span class="radio-sub">Frete calculado pela cidade</span></div>
+                                </div>
+                            </label>
+                            <label class="radio-opt" id="opt-retirada">
+                                <input type="radio" name="forma_recebimento" value="retirada" onchange="handleRecebimento('retirada')">
+                                <div class="radio-content">
+                                    <span class="radio-icon">🏪</span>
+                                    <div><strong>Retirar na loja</strong><span class="radio-sub">Sem custo de frete</span></div>
+                                </div>
+                            </label>
+                        </div>
+                        <div id="entrega-fields" style="margin-top:14px;">
+                            <div class="form-group">
+                                <label class="form-label">Cidade de Entrega</label>
+                                {{ form.cidade_cliente }}
+                                {% if form.cidade_cliente.errors %}<p class="form-error">{{ form.cidade_cliente.errors.0 }}</p>{% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Endereço Completo</label>
+                                {{ form.endereco_cliente }}
+                                {% if form.endereco_cliente.errors %}<p class="form-error">{{ form.endereco_cliente.errors.0 }}</p>{% endif %}
+                            </div>
+                        </div>
+                        <div id="retirada-info" class="info-box info-box-blue" style="display:none; margin-top:12px;">
+                            📍 <strong>Retire na nossa loja em Três Rios, RJ.</strong><br>
+                            Combinamos o horário pelo WhatsApp após o pedido!
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Pagamento -->
+                <div class="co-section">
+                    <div class="aurora-bar aurora-bar-3"></div>
+                    <h3 class="co-section-h"><span class="co-step">3</span> Como vai pagar?</h3>
+                    <div class="co-section-body">
+                        <div class="radio-group radio-group-2col">
+                            <label class="radio-opt">
+                                <input type="radio" name="forma_pagamento" value="credito" checked onchange="handlePagamento('credito')">
+                                <div class="radio-content"><span class="radio-icon">💳</span><div><strong>Crédito</strong></div></div>
+                            </label>
+                            <label class="radio-opt">
+                                <input type="radio" name="forma_pagamento" value="debito" onchange="handlePagamento('debito')">
+                                <div class="radio-content"><span class="radio-icon">💳</span><div><strong>Débito</strong></div></div>
+                            </label>
+                            <label class="radio-opt">
+                                <input type="radio" name="forma_pagamento" value="dinheiro" onchange="handlePagamento('dinheiro')">
+                                <div class="radio-content"><span class="radio-icon">💵</span><div><strong>Dinheiro</strong></div></div>
+                            </label>
+                            <label class="radio-opt">
+                                <input type="radio" name="forma_pagamento" value="pix" onchange="handlePagamento('pix')">
+                                <div class="radio-content"><span class="radio-icon">📱</span><div><strong>Pix</strong></div></div>
+                            </label>
+                        </div>
+                        <div id="cartao-info" class="info-box" style="margin-top:12px;">💳 Pagamento na entrega ou retirada.</div>
+                        <div id="pix-info" class="co-pix-card" style="display:none; margin-top:12px;">
+                            <div class="pix-header">📱 Chave Pix para pagamento</div>
+                            {% if config.chave_pix %}
+                            <div class="pix-tipo">{{ config.get_tipo_pix_label }}</div>
+                            <div class="pix-chave" id="pix-chave-txt">{{ config.chave_pix }}</div>
+                            <button type="button" onclick="copiarPix()" class="btn-copiar-pix">📋 Copiar chave</button>
+                            {% else %}
+                            <p style="color:var(--cor-texto-suave); font-size:14px;">Configure a chave Pix no painel admin.</p>
+                            {% endif %}
+                        </div>
+                        <div id="troco-field" style="display:none; margin-top:12px;">
+                            <div class="form-group">
+                                <label class="form-label">Precisa de troco? Para quanto? (R$)</label>
+                                {{ form.troco_para }}
+                                {% if form.troco_para.errors %}<p class="form-error">{{ form.troco_para.errors.0 }}</p>{% endif %}
+                                <p class="form-help">Deixe em branco se não precisar.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Observações -->
+                <div class="co-section">
+                    <div class="aurora-bar aurora-bar-4"></div>
+                    <div class="co-section-body">
+                        <div class="form-group">
+                            <label class="form-label">📝 Observações (opcional)</label>
+                            {{ form.observacoes }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box info-box-green">
+                    📱 Você será redirecionado ao WhatsApp com o pedido pronto.
+                </div>
+
+                <!-- LGPD -->
+                <div class="lgpd-consent-box">
+                    <div class="lgpd-row">
+                        {{ form.lgpd_aceito }}
+                        <label for="id_lgpd_aceito" class="lgpd-texto">
+                            Li e concordo com a
+                            <a href="/privacidade/" target="_blank" onclick="event.stopPropagation()">Política de Privacidade</a>
+                            e os <a href="/termos/" target="_blank" onclick="event.stopPropagation()">Termos de Uso</a>.
+                            Autorizo o uso dos meus dados para processar este pedido.
+                        </label>
+                    </div>
+                    {% if form.lgpd_aceito.errors %}
+                    <p class="form-error" style="margin-top:6px;">{{ form.lgpd_aceito.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-whatsapp btn-block btn-lg" style="margin-top:16px; height:52px; font-size:16px; font-weight:700; border-radius:12px; box-shadow:0 8px 24px rgba(37,211,102,0.25);">
+                    📲 Enviar Pedido via WhatsApp
+                </button>
+            </form>
+        </div>
+
+        <!-- Resumo -->
+        <aside class="checkout-resumo-col">
+            <div class="dark-card dark-card-glow" style="position:sticky; top:84px;">
+                <div class="aurora-bar aurora-bar-full"></div>
+                <div class="dark-card-body">
+                    <h2 class="card-titulo">🛒 Resumo do Pedido</h2>
+                    {% for item in itens %}
+                    <div class="resumo-item">
+                        {% if item.imagem %}<img src="{{ item.imagem }}" alt="" class="resumo-item-img">
+                        {% else %}<div class="resumo-item-img-ph">🔧</div>{% endif %}
+                        <div class="resumo-item-info">
+                            <span class="resumo-item-nome">{{ item.nome }}</span>
+                            <span class="resumo-item-qtd">{{ item.quantidade }}x R$ {{ item.preco }}</span>
+                        </div>
+                        <span class="resumo-item-sub">R$ {{ item.subtotal|floatformat:2 }}</span>
+                    </div>
+                    {% endfor %}
+                    <hr class="divider">
+                    <div class="resumo-row"><span>Subtotal</span><span>R$ {{ subtotal|floatformat:2 }}</span></div>
+                    <div class="resumo-row">
+                        <span>Frete</span>
+                        <span id="resumo-frete-display"><em style="color:var(--cor-texto-suave); font-size:13px;">selecione cidade</em></span>
+                    </div>
+                    <div class="resumo-total">
+                        <span>Total</span>
+                        <span id="resumo-total-display">R$ {{ subtotal|floatformat:2 }}</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/checkout.js' %}"></script>
+{% endblock %}

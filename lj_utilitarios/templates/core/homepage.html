@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ config.nome_loja }} — Utilitários Locais{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-grid">
+            <!-- Texto -->
+            <div>
+                <span class="hero-tag">✦ Três Rios, RJ · Entrega local</span>
+                <h1 class="hero-title">{{ config.texto_banner|default:'Produtos selecionados para sua casa' }}</h1>
+                <p class="hero-sub">{{ config.subtexto_banner|default:'Qualidade e conveniência com entrega rápida em Três Rios e região.' }}</p>
+                <div class="hero-actions">
+                    <a href="{% url 'produtos:lista' %}" class="btn btn-primary btn-lg">Ver Produtos</a>
+                    {% if config.whatsapp_numero %}
+                    <a href="https://wa.me/55{{ config.whatsapp_numero }}" class="btn btn-whatsapp btn-lg" target="_blank">💬 WhatsApp</a>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Visual card -->
+            <div>
+                <div class="hero-card">
+                    {% if config.logo %}
+                    <img src="{{ config.logo.url }}" alt="{{ config.nome_loja }}"
+                         style="width:120px; height:120px; object-fit:contain; border-radius:16px;">
+                    {% else %}
+                    <div class="gem gem-lg">L</div>
+                    {% endif %}
+                    <div class="hero-card-title">{{ config.nome_loja|default:'L&J Utilitários' }}</div>
+                    <div class="hero-card-sub">Qualidade e confiança em Três Rios</div>
+                    <div class="aurora-bar aurora-bar-full" style="position:absolute; bottom:0; left:0;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORIAS -->
+{% if categorias %}
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Explorar por categoria</h2>
+        <div class="cats-grid">
+            {% for cat in categorias %}
+            <a href="{% url 'produtos:lista' %}?categoria={{ cat.slug }}" class="cat-card">
+                <div class="aurora-bar"></div>
+                {% if cat.icone_img %}
+                <img src="{{ cat.icone_img.url }}" alt="{{ cat.nome }}" loading="lazy"
+                     style="width:60px; height:60px; object-fit:contain; margin-top:6px;">
+                {% else %}
+                <span class="cat-icon">{{ cat.icone_emoji|default:'🏷️' }}</span>
+                {% endif %}
+                <span class="cat-nome">{{ cat.nome }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- DESTAQUES -->
+{% if destaques %}
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                Em destaque
+                <span class="section-badge">🔥 Selecionados</span>
+            </h2>
+            <a href="{% url 'produtos:lista' %}" class="ver-mais">Ver todos →</a>
+        </div>
+        <div class="produtos-grid">
+            {% for produto in destaques %}{% include 'produtos/_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- OFERTAS -->
+{% if ofertas %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Ofertas da semana</h2>
+            <a href="{% url 'produtos:lista' %}?ordem=menor_preco" class="ver-mais">Ver todas →</a>
+        </div>
+        <div class="produtos-grid">
+            {% for produto in ofertas %}{% include 'produtos/_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- NOVIDADES -->
+{% if recentes %}
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">🆕 Novidades</h2>
+            <a href="{% url 'produtos:lista' %}?ordem=mais_novo" class="ver-mais">Ver mais →</a>
+        </div>
+        <div class="produtos-grid">
+            {% for produto in recentes %}{% include 'produtos/_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

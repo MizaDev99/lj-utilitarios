@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Termos de Uso — {{ config.nome_loja }}{% endblock %}
+
+{% block content %}
+<div class="legal-page">
+    <h1>📋 Termos de Uso</h1>
+    <p class="legal-meta">{{ config.nome_loja }} — Última atualização: junho de 2025</p>
+
+    <h2>1. Sobre o Serviço</h2>
+    <p><strong>{{ config.nome_loja }}</strong> é um marketplace local de utilitários que permite a compra de produtos com entrega ou retirada em Três Rios, RJ e cidades próximas. Os pedidos são finalizados via WhatsApp diretamente com o vendedor.</p>
+
+    <h2>2. Área de Atendimento</h2>
+    <p>Atendemos as seguintes cidades:</p>
+    <ul>
+        <li>Três Rios, RJ (cidade da loja)</li>
+        <li>Comendador Levy Gasparian</li>
+        <li>Paraíba do Sul</li>
+        <li>Bemposta</li>
+        <li>Areal</li>
+    </ul>
+    <p>Entregas fora dessas cidades poderão ser combinadas diretamente pelo WhatsApp.</p>
+
+    <h2>3. Responsabilidades do Comprador</h2>
+    <ul>
+        <li>Fornecer dados de entrega corretos e completos</li>
+        <li>Estar disponível para receber a entrega ou retirar no prazo combinado</li>
+        <li>Comunicar pelo WhatsApp qualquer problema com o pedido</li>
+    </ul>
+
+    <h2>4. Responsabilidades do Vendedor</h2>
+    <ul>
+        <li>Manter o estoque atualizado e os preços corretos</li>
+        <li>Entregar os produtos conforme o pedido</li>
+        <li>Responder ao cliente pelo WhatsApp em tempo razoável</li>
+        <li>Manter os dados do comprador em sigilo</li>
+    </ul>
+
+    <h2>5. Política de Cancelamento</h2>
+    <p>Cancelamentos devem ser solicitados <strong>via WhatsApp</strong> antes do envio do produto. Após o envio, o cancelamento fica sujeito à política combinada entre comprador e vendedor.</p>
+    <p>Em caso de produto com defeito ou divergência com o anúncio, entre em contato via WhatsApp para solução.</p>
+
+    <h2>6. Pagamento</h2>
+    <p>Os pagamentos são realizados <strong>no momento da entrega ou na retirada</strong> (dinheiro, cartão ou Pix). A plataforma não processa pagamentos online diretamente.</p>
+
+    <h2>7. Limitação de Responsabilidade</h2>
+    <p>{{ config.nome_loja }} atua como plataforma intermediária. Não nos responsabilizamos por:</p>
+    <ul>
+        <li>Atrasos causados por fatores externos (trânsito, clima, etc.)</li>
+        <li>Divergências tratadas exclusivamente entre comprador e vendedor via WhatsApp</li>
+    </ul>
+
+    <h2>8. Aceitação dos Termos</h2>
+    <p>Ao finalizar um pedido, você confirma que leu e concorda com estes termos e com nossa <a href="{% url 'core:privacidade' %}" class="link-lgpd">Política de Privacidade</a>.</p>
+
+    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--cor-borda);">
+        <a href="{% url 'core:homepage' %}" class="btn btn-outline-light">← Voltar</a>
+        &nbsp;
+        <a href="{% url 'core:privacidade' %}" class="btn btn-outline-purple">Política de Privacidade →</a>
+    </div>
+</div>
+{% endblock %}

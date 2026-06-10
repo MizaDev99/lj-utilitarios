@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Painel{% endblock %} — {{ config.nome_loja }}</title>
+    <link rel="stylesheet" href="{% static 'css/painel.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="painel-body">
+
+<div class="painel-wrapper">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-logo">{{ config.nome_loja }}</span>
+            <span class="sidebar-sub">Painel Admin</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{% url 'painel:dashboard' %}" class="sidebar-link {% block nav_dashboard %}{% endblock %}">
+                📊 Dashboard
+            </a>
+            <a href="{% url 'painel:pedidos' %}" class="sidebar-link {% block nav_pedidos %}{% endblock %}">
+                📦 Pedidos
+            </a>
+            <a href="{% url 'painel:produtos' %}" class="sidebar-link {% block nav_produtos %}{% endblock %}">
+                🏷️ Produtos
+            </a>
+            <a href="{% url 'painel:categorias' %}" class="sidebar-link {% block nav_categorias %}{% endblock %}">
+                📂 Categorias
+            </a>
+            <a href="{% url 'painel:configuracoes' %}" class="sidebar-link {% block nav_config %}{% endblock %}">
+                ⚙️ Configurações
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <span class="sidebar-user">{{ request.user.username }}</span>
+            <a href="{% url 'painel:logout' %}" class="sidebar-logout">Sair</a>
+        </div>
+    </aside>
+
+    <main class="painel-main">
+        <header class="painel-topbar">
+            <h1 class="painel-page-title">{% block page_title %}{% endblock %}</h1>
+            <div class="painel-topbar-actions">{% block topbar_actions %}{% endblock %}</div>
+        </header>
+
+        <div class="painel-content">
+            {% if messages %}
+            {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+            {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+</div>
+
+<script src="{% static 'js/painel.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

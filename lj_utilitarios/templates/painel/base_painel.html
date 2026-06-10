@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Painel{% endblock %} — {{ config.nome_loja }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/painel.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="painel-body">
+<div class="painel-wrapper">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo-wrap">
+            {% if config.logo %}
+            <img src="{{ config.logo.url }}" alt="{{ config.nome_loja }}"
+                 style="height:36px; width:auto; object-fit:contain; border-radius:6px;">
+            {% else %}
+            <span class="sidebar-logo-text">LJ</span>
+            {% endif %}
+            <div>
+                <span class="sidebar-loja">{{ config.nome_loja }}</span>
+                <span class="sidebar-sub">Painel Admin</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{% url 'painel:dashboard' %}" class="s-link {% block nav_dash %}{% endblock %}">
+                <span class="s-icon">📊</span> Dashboard
+            </a>
+            <a href="{% url 'painel:pedidos' %}" class="s-link {% block nav_ped %}{% endblock %}">
+                <span class="s-icon">📦</span> Pedidos
+            </a>
+            <a href="{% url 'painel:produtos' %}" class="s-link {% block nav_prod %}{% endblock %}">
+                <span class="s-icon">🏷️</span> Produtos
+            </a>
+            <a href="{% url 'painel:categorias' %}" class="s-link {% block nav_cat %}{% endblock %}">
+                <span class="s-icon">📂</span> Categorias
+            </a>
+            <a href="{% url 'painel:configuracoes' %}" class="s-link {% block nav_cfg %}{% endblock %}">
+                <span class="s-icon">⚙️</span> Configurações
+            </a>
+            <a href="{% url 'painel:lgpd' %}" class="s-link {% block nav_lgpd %}{% endblock %}">
+                <span class="s-icon">🔒</span> LGPD
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <span class="sidebar-user">{{ request.user.username }}</span>
+            <form method="post" action="{% url 'painel:logout' %}" style="display:inline; margin:0;">
+                {% csrf_token %}
+                <button type="submit" class="sidebar-logout" style="background:none; border:none; padding:0; cursor:pointer; font:inherit;">Sair</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="painel-main">
+        <header class="painel-topbar">
+            <h1 class="topbar-titulo">{% block page_title %}{% endblock %}</h1>
+            <div>{% block topbar_actions %}{% endblock %}</div>
+        </header>
+        <div class="painel-content">
+            {% if messages %}
+            {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+            {% endfor %}
+            {% endif %}
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+</div>
+<script src="{% static 'js/painel.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

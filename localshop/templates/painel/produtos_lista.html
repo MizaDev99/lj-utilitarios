@@ -1,0 +1,79 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block title %}Produtos{% endblock %}
+{% block page_title %}Produtos{% endblock %}
+{% block nav_produtos %}ativo{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'painel:produto_criar' %}" class="btn btn-primary">+ Novo Produto</a>
+{% endblock %}
+
+{% block content %}
+<div class="painel-section">
+    <form method="get" class="search-bar-painel">
+        <input type="text" name="q" class="form-control" placeholder="Buscar produto..." value="{{ busca }}">
+        <button type="submit" class="btn btn-outline">Buscar</button>
+    </form>
+
+    <div class="table-wrap">
+        <table class="tabela">
+            <thead>
+                <tr>
+                    <th>Imagem</th>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                <tr>
+                    <td>
+                        {% if produto.imagem_principal %}
+                        <img src="{{ produto.imagem_principal.url }}" alt="" class="tabela-thumb">
+                        {% else %}
+                        <div class="no-img-xs">📦</div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong>{{ produto.nome }}</strong>
+                        {% if produto.destaque %}<span class="badge-mini badge-destaque">⭐ Destaque</span>{% endif %}
+                        {% if produto.tem_promocao %}<span class="badge-mini badge-oferta-mini">🔥 Oferta</span>{% endif %}
+                    </td>
+                    <td>{{ produto.categoria.nome|default:"—" }}</td>
+                    <td>
+                        {% if produto.tem_promocao %}
+                        <span style="text-decoration:line-through; color:#9CA3AF; font-size:12px;">R$ {{ produto.preco }}</span><br>
+                        <strong>R$ {{ produto.preco_promocional }}</strong>
+                        {% else %}
+                        R$ {{ produto.preco }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="{% if produto.estoque == 0 %}text-danger{% elif produto.estoque < 5 %}text-warning{% endif %}">
+                            {{ produto.estoque }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if produto.ativo %}
+                        <span class="status-badge" style="background:#D1FAE5;color:#065F46;border:1px solid #10B981;">Ativo</span>
+                        {% else %}
+                        <span class="status-badge" style="background:#FEE2E2;color:#991B1B;border:1px solid #EF4444;">Inativo</span>
+                        {% endif %}
+                    </td>
+                    <td class="acoes-col">
+                        <a href="{% url 'painel:produto_editar' produto.pk %}" class="btn btn-sm btn-outline">Editar</a>
+                        <a href="{% url 'painel:produto_deletar' produto.pk %}" class="btn btn-sm btn-danger">Excluir</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="text-center">Nenhum produto encontrado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Carrinho — {{ config.nome_loja }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 24px; padding-bottom: 48px;">
+    <h1 class="page-title">🛒 Meu Carrinho</h1>
+
+    {% if carrinho %}
+    <div class="carrinho-layout">
+
+        <div class="carrinho-itens">
+            {% for id, item in carrinho.items %}
+            <div class="carrinho-item" id="item-{{ id }}">
+                <div class="carrinho-item-img">
+                    {% if item.imagem %}
+                    <img src="{{ item.imagem }}" alt="{{ item.nome }}">
+                    {% else %}
+                    <div class="no-img-sm">📦</div>
+                    {% endif %}
+                </div>
+                <div class="carrinho-item-info">
+                    <a href="{% url 'produtos:detalhe' item.slug %}" class="carrinho-item-nome">{{ item.nome }}</a>
+                    <p class="carrinho-item-preco">R$ {{ item.preco }}</p>
+                </div>
+                <div class="carrinho-item-qtd">
+                    <button onclick="atualizarQtd('{{ id }}', {{ item.quantidade }} - 1)" class="qtd-btn">−</button>
+                    <span class="qtd-valor" id="qtd-{{ id }}">{{ item.quantidade }}</span>
+                    <button onclick="atualizarQtd('{{ id }}', {{ item.quantidade }} + 1)" class="qtd-btn">+</button>
+                </div>
+                <div class="carrinho-item-subtotal" id="sub-{{ id }}">
+                    R$ {% widthratio item.preco 1 item.quantidade %}
+                </div>
+                <form method="post" action="{% url 'carrinho:remover' id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-remover" title="Remover">✕</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="carrinho-resumo">
+            <h3 class="resumo-titulo">Resumo do Pedido</h3>
+            <div class="resumo-linha">
+                <span>Subtotal</span>
+                <span id="resumo-subtotal">R$ {{ subtotal|floatformat:2 }}</span>
+            </div>
+            <div class="resumo-linha">
+                <span>Frete</span>
+                <span id="resumo-frete">
+                    {% if frete == 0 %}
+                        <strong style="color: #10B981;">Grátis</strong>
+                    {% else %}
+                        R$ {{ frete|floatformat:2 }}
+                    {% endif %}
+                </span>
+            </div>
+            {% if frete > 0 %}
+            <p class="frete-info">
+                Frete grátis em compras acima de R$ {{ frete_gratis_acima|floatformat:2 }}
+            </p>
+            {% endif %}
+            <div class="resumo-total">
+                <span>Total</span>
+                <span id="resumo-total">R$ {{ total|floatformat:2 }}</span>
+            </div>
+            <a href="{% url 'pedidos:checkout' %}" class="btn btn-finalizar">
+                Finalizar Compra via WhatsApp
+            </a>
+            <a href="{% url 'produtos:lista' %}" class="btn btn-continuar">
+                ← Continuar Comprando
+            </a>
+        </div>
+
+    </div>
+    {% else %}
+    <div class="empty-state" style="text-align:center; padding: 64px 0;">
+        <div style="font-size: 64px; margin-bottom: 16px;">🛒</div>
+        <h2>Seu carrinho está vazio</h2>
+        <p style="color:#6B7280; margin-bottom: 24px;">Adicione produtos para começar suas compras!</p>
+        <a href="{% url 'produtos:lista' %}" class="btn btn-primary">Ver Produtos</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const CSRF_TOKEN = '{{ csrf_token }}';
+
+async function atualizarQtd(produtoId, novaQtd) {
+    const res = await fetch(`/carrinho/atualizar/${produtoId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN,
+        },
+        body: JSON.stringify({ quantidade: novaQtd }),
+    });
+    const data = await res.json();
+    if (data.success) {
+        if (novaQtd < 1) {
+            document.getElementById(`item-${produtoId}`)?.remove();
+        } else {
+            const qtdEl = document.getElementById(`qtd-${produtoId}`);
+            if (qtdEl) qtdEl.textContent = novaQtd;
+            const subEl = document.getElementById(`sub-${produtoId}`);
+            if (subEl) subEl.textContent = `R$ ${data.item_subtotal.toFixed(2)}`;
+        }
+        document.getElementById('resumo-subtotal').textContent = `R$ ${data.subtotal.toFixed(2)}`;
+        document.getElementById('resumo-frete').innerHTML = data.frete === 0
+            ? '<strong style="color:#10B981;">Grátis</strong>'
+            : `R$ ${data.frete.toFixed(2)}`;
+        document.getElementById('resumo-total').textContent = `R$ ${data.total.toFixed(2)}`;
+
+        const badge = document.querySelector('.cart-badge');
+        if (badge) badge.textContent = data.total_itens;
+    }
+}
+</script>
+{% endblock %}

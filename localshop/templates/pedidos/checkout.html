@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Finalizar Compra — {{ config.nome_loja }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 24px; padding-bottom: 48px;">
+    <h1 class="page-title">Finalizar Compra</h1>
+
+    <div class="checkout-layout">
+
+        <div class="checkout-form-area">
+            <div class="form-card">
+                <h2 class="form-card-title">📋 Seus Dados</h2>
+                <form method="post" action="{% url 'pedidos:finalizar' %}" id="checkout-form">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <ul class="form-errors">
+                            {% for erro in field.errors %}
+                            <li class="form-error">{{ erro }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    {% if cidades_atendidas %}
+                    <div class="cidades-info">
+                        <p>📍 Cidades atendidas: {{ cidades_atendidas|join:", " }}</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="whatsapp-aviso">
+                        <p>📱 Ao finalizar, você será redirecionado para o WhatsApp com o pedido pronto para enviar.</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-finalizar btn-block">
+                        📲 Enviar Pedido via WhatsApp
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="checkout-resumo">
+            <div class="form-card">
+                <h2 class="form-card-title">🛒 Resumo do Pedido</h2>
+
+                {% for id, item in carrinho.items %}
+                <div class="resumo-item">
+                    <div class="resumo-item-img">
+                        {% if item.imagem %}
+                        <img src="{{ item.imagem }}" alt="{{ item.nome }}">
+                        {% else %}
+                        <div class="no-img-sm">📦</div>
+                        {% endif %}
+                    </div>
+                    <div class="resumo-item-info">
+                        <span class="resumo-item-nome">{{ item.nome }}</span>
+                        <span class="resumo-item-qtd">{{ item.quantidade }}x R$ {{ item.preco }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="resumo-divider"></div>
+
+                <div class="resumo-linha">
+                    <span>Subtotal</span>
+                    <span>R$ {{ subtotal|floatformat:2 }}</span>
+                </div>
+                <div class="resumo-linha">
+                    <span>Frete</span>
+                    <span>
+                        {% if frete == 0 %}
+                            <strong style="color:#10B981;">Grátis ✅</strong>
+                        {% else %}
+                            R$ {{ frete|floatformat:2 }}
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="resumo-total">
+                    <span>Total</span>
+                    <span>R$ {{ total|floatformat:2 }}</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

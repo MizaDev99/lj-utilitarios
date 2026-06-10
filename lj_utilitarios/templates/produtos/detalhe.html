@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ produto.nome }} — {{ config.nome_loja }}{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:32px; padding-bottom:64px;">
+
+    <nav class="breadcrumb">
+        <a href="{% url 'core:homepage' %}">Início</a> /
+        <a href="{% url 'produtos:lista' %}">Produtos</a> /
+        {% if produto.categoria %}<a href="{% url 'produtos:lista' %}?categoria={{ produto.categoria.slug %}">{{ produto.categoria.nome }}</a> / {% endif %}
+        <span>{{ produto.nome }}</span>
+    </nav>
+
+    <div class="detalhe-layout">
+        <!-- Galeria -->
+        <div class="galeria">
+            <div class="galeria-main">
+                <img id="img-principal"
+                     src="{% if produto.imagem_principal %}{{ produto.imagem_principal.url }}{% else %}{% static 'img/no-product.png' %}{% endif %}"
+                     alt="{{ produto.nome }}" class="galeria-main-img">
+                {% if produto.tem_promocao %}
+                <span class="badge-oferta badge-oferta-lg">-{{ produto.percentual_desconto }}%</span>
+                {% endif %}
+            </div>
+            <div class="galeria-aurora-bar aurora-bar"></div>
+            {% if imagens %}
+            <div class="galeria-thumbs">
+                {% if produto.imagem_principal %}
+                <img src="{{ produto.imagem_principal.url }}" class="galeria-thumb ativo" onclick="trocarImg(this,'{{ produto.imagem_principal.url }}')" alt="">
+                {% endif %}
+                {% for img in imagens %}
+                <img src="{{ img.imagem.url }}" class="galeria-thumb" onclick="trocarImg(this,'{{ img.imagem.url }}')" alt="">
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Informações -->
+        <div class="detalhe-info">
+            {% if produto.categoria %}
+            <span class="cat-pill">{{ produto.categoria.icone }} {{ produto.categoria.nome }}</span>
+            {% endif %}
+
+            <h1 class="detalhe-nome">{{ produto.nome }}</h1>
+
+            <div class="detalhe-preco-area">
+                {% if produto.tem_promocao %}
+                <span class="detalhe-preco-de">R$ {{ produto.preco }}</span>
+                <span class="detalhe-preco-por">R$ {{ produto.preco_promocional }}</span>
+                <span class="economia-tag">Economize {{ produto.percentual_desconto }}%</span>
+                {% else %}
+                <span class="detalhe-preco-por">R$ {{ produto.preco }}</span>
+                {% endif %}
+            </div>
+
+            {% if produto.estoque > 0 %}
+            <p class="estoque-ok">✅ Em estoque ({{ produto.estoque }} unidades)</p>
+            {% else %}
+            <p class="estoque-esgotado">❌ Produto esgotado</p>
+            {% endif %}
+
+            {% if config.cidades_entrega %}
+            <div class="entrega-card">
+                <div class="entrega-card-titulo">📍 Entrega disponível em</div>
+                {% for cidade in config.cidades_entrega.split %}
+                <div class="entrega-cidade">• {{ cidade }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if produto.estoque > 0 %}
+            <form method="post" action="{% url 'carrinho:adicionar' produto.pk %}">
+                {% csrf_token %}
+                <div class="qtd-wrap">
+                    <label class="qtd-label" for="qtd">Quantidade:</label>
+                    <div class="qtd-ctrl">
+                        <button type="button" onclick="ajustarQtd(-1)">−</button>
+                        <input type="number" name="quantidade" id="qtd" value="1" min="1" max="{{ produto.estoque }}">
+                        <button type="button" onclick="ajustarQtd(1)">+</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-add-lg">🛒 Adicionar ao Carrinho</button>
+            </form>
+            {% endif %}
+
+            {% if produto.descricao %}
+            <div class="detalhe-desc">
+                <div class="detalhe-desc-card">
+                    <div class="aurora-bar"></div>
+                    <div class="detalhe-desc-body">
+                        <h3>Descrição</h3>
+                        <p>{{ produto.descricao|linebreaksbr }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if relacionados %}
+    <div style="margin-top:56px;">
+        <h2 class="section-title">Produtos Relacionados</h2>
+        <div class="produtos-grid">
+            {% for p in relacionados %}{% with produto=p %}{% include 'produtos/_card.html' %}{% endwith %}{% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function trocarImg(thumb, url) {
+    document.getElementById('img-principal').src = url;
+    document.querySelectorAll('.galeria-thumb').forEach(t => t.classList.remove('ativo'));
+    thumb.classList.add('ativo');
+}
+function ajustarQtd(d) {
+    const el = document.getElementById('qtd');
+    let v = parseInt(el.value) + d;
+    v = Math.max(1, Math.min(v, parseInt(el.max)));
+    el.value = v;
+}
+</script>
+{% endblock %}
