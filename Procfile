@@ -1,1 +1,1 @@
-web: gunicorn localshop.wsgi --chdir localshop --bind 0.0.0.0:$PORT
+web: gunicorn localshop.wsgi --chdir localshop --bind 0.0.0.0:8000
