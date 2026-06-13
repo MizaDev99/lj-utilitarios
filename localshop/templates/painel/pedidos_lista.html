@@ -2,57 +2,33 @@
 
 {% block title %}Pedidos{% endblock %}
 {% block page_title %}Pedidos{% endblock %}
-{% block nav_pedidos %}ativo{% endblock %}
+{% block nav_ped %}ativo{% endblock %}
 
 {% block content %}
-<div class="painel-section">
+<div class="p-section">
     <div class="filtros-status">
-        <a href="{% url 'painel:pedidos' %}" class="btn btn-sm {% if not status_filtro %}btn-primary{% else %}btn-outline{% endif %}">
-            Todos
-        </a>
+        <a href="{% url 'painel:pedidos' %}" class="btn btn-sm {% if not status_filtro %}btn-primary{% else %}btn-outline{% endif %}">Todos</a>
         {% for val, label in status_choices %}
-        <a href="{% url 'painel:pedidos' %}?status={{ val }}"
-           class="btn btn-sm {% if status_filtro == val %}btn-primary{% else %}btn-outline{% endif %}">
-            {{ label }}
-        </a>
+        <a href="?status={{ val }}" class="btn btn-sm {% if status_filtro == val %}btn-primary{% else %}btn-outline{% endif %}">{{ label }}</a>
         {% endfor %}
     </div>
-
     <div class="table-wrap" style="margin-top:16px;">
         <table class="tabela">
-            <thead>
-                <tr>
-                    <th>Pedido</th>
-                    <th>Cliente</th>
-                    <th>Cidade</th>
-                    <th>Itens</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Data</th>
-                    <th></th>
-                </tr>
-            </thead>
+            <thead><tr><th>Pedido</th><th>Cliente</th><th>Cidade</th><th>Itens</th><th>Total</th><th>Status</th><th>Data</th><th></th></tr></thead>
             <tbody>
-                {% for pedido in pedidos %}
+                {% for p in pedidos %}
                 <tr>
-                    <td><strong>#{{ pedido.numero_pedido }}</strong></td>
-                    <td>{{ pedido.nome_cliente }}</td>
-                    <td>{{ pedido.cidade_cliente }}</td>
-                    <td>{{ pedido.itens.count }}</td>
-                    <td><strong>R$ {{ pedido.total|floatformat:2 }}</strong></td>
-                    <td>
-                        <span class="status-badge"
-                              style="background:{{ pedido.get_status_display_color }}20;color:{{ pedido.get_status_display_color }};border:1px solid {{ pedido.get_status_display_color }};">
-                            {{ pedido.get_status_display }}
-                        </span>
-                    </td>
-                    <td>{{ pedido.criado_em|date:"d/m/y H:i" }}</td>
-                    <td>
-                        <a href="{% url 'painel:pedido_detalhe' pedido.pk %}" class="btn btn-sm btn-outline">Detalhes</a>
-                    </td>
+                    <td><strong>#{{ p.numero_pedido }}</strong></td>
+                    <td>{{ p.nome_cliente }}</td>
+                    <td>{{ p.cidade_cliente }}</td>
+                    <td>{{ p.itens.count }}</td>
+                    <td><strong>R$ {{ p.total|floatformat:2 }}</strong></td>
+                    <td><span class="status-badge" style="background:{{ p.get_status_cor }}22;color:{{ p.get_status_cor }};border:1px solid {{ p.get_status_cor }};">{{ p.get_status_display }}</span></td>
+                    <td>{{ p.criado_em|date:"d/m/y H:i" }}</td>
+                    <td><a href="{% url 'painel:pedido_detalhe' p.pk %}" class="btn btn-sm btn-outline">Detalhes</a></td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="8" class="text-center">Nenhum pedido.</td></tr>
+                <tr><td colspan="8" class="text-center text-suave">Nenhum pedido.</td></tr>
                 {% endfor %}
             </tbody>
         </table>

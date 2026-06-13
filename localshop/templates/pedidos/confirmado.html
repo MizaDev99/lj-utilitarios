@@ -3,29 +3,33 @@
 {% block title %}Pedido Confirmado — {{ config.nome_loja }}{% endblock %}
 
 {% block content %}
-<div class="container" style="padding: 64px 16px; text-align: center;">
+<div class="container" style="padding:64px 16px; text-align:center;">
     <div class="confirmado-card">
-        <div class="confirmado-icon">✅</div>
-        <h1 class="confirmado-titulo">Pedido Realizado!</h1>
-        <p class="confirmado-sub">Obrigado, <strong>{{ pedido.nome_cliente }}</strong>!</p>
-        <p class="confirmado-numero">Número do Pedido: <strong>#{{ pedido.numero_pedido }}</strong></p>
-        <p class="confirmado-info">Seu pedido foi registrado e estamos aguardando a confirmação.</p>
+        <div class="aurora-bar aurora-bar-full"></div>
+        <div class="confirmado-card-body">
+            <div class="confirmado-icon">🎉</div>
+            <h1 class="confirmado-h1">Pedido Realizado!</h1>
+            <p class="confirmado-sub">Obrigado, <strong>{{ pedido.nome_cliente }}</strong>!</p>
+            <div class="confirmado-numero">#{{ pedido.numero_pedido }}</div>
+            <p class="confirmado-info">Seu pedido foi registrado. Clique abaixo para enviar ao vendedor via WhatsApp.</p>
 
-        <div class="confirmado-detalhes">
-            <div class="confirmado-linha">
-                <span>Cidade:</span><span>{{ pedido.cidade_cliente }}</span>
+            {% if config.whatsapp_numero %}
+            <a href="https://wa.me/55{{ config.whatsapp_numero }}" class="btn btn-whatsapp btn-lg" target="_blank" style="margin-top:20px;">
+                💬 Abrir WhatsApp
+            </a>
+            {% endif %}
+
+            <div class="confirmado-detalhes">
+                <div class="confirmado-row"><span>Cidade</span><span>{{ pedido.cidade_cliente }}</span></div>
+                <div class="confirmado-row"><span>Endereço</span><span>{{ pedido.endereco_cliente }}</span></div>
+                <div class="confirmado-row">
+                    <span>Total</span>
+                    <span><strong style="font-family:'Space Grotesk',sans-serif; color:var(--cor-primaria);">R$ {{ pedido.total|floatformat:2 }}</strong></span>
+                </div>
             </div>
-            <div class="confirmado-linha">
-                <span>Endereço:</span><span>{{ pedido.endereco_cliente }}</span>
-            </div>
-            <div class="confirmado-linha">
-                <span>Total:</span><span><strong>R$ {{ pedido.total|floatformat:2 }}</strong></span>
-            </div>
+
+            <a href="{% url 'core:homepage' %}" class="btn btn-outline-purple" style="margin-top:20px;">Continuar Comprando</a>
         </div>
-
-        <a href="{% url 'core:homepage' %}" class="btn btn-primary" style="margin-top: 32px;">
-            Continuar Comprando
-        </a>
     </div>
 </div>
 {% endblock %}

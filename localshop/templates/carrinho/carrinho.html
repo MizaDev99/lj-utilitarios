@@ -1,85 +1,85 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block title %}Carrinho — {{ config.nome_loja }}{% endblock %}
 
 {% block content %}
-<div class="container" style="padding-top: 24px; padding-bottom: 48px;">
-    <h1 class="page-title">🛒 Meu Carrinho</h1>
+<div class="container" style="padding-top:32px; padding-bottom:64px;">
+    <h1 class="page-h1">🛒 Meu Carrinho</h1>
 
-    {% if carrinho %}
+    {% if itens %}
     <div class="carrinho-layout">
-
-        <div class="carrinho-itens">
-            {% for id, item in carrinho.items %}
-            <div class="carrinho-item" id="item-{{ id }}">
-                <div class="carrinho-item-img">
-                    {% if item.imagem %}
-                    <img src="{{ item.imagem }}" alt="{{ item.nome }}">
-                    {% else %}
-                    <div class="no-img-sm">📦</div>
-                    {% endif %}
+        <div class="carrinho-itens-col">
+            {% for item in itens %}
+            <div class="cart-item" id="item-{{ item.id }}">
+                <div class="aurora-bar"></div>
+                <div class="cart-item-content">
+                    <div class="cart-item-img">
+                        {% if item.imagem %}<img src="{{ item.imagem }}" alt="{{ item.nome }}">
+                        {% else %}<div class="no-img-sm">🔧</div>{% endif %}
+                    </div>
+                    <div class="cart-item-info">
+                        <a href="{% url 'produtos:detalhe' item.slug %}" class="cart-item-nome">{{ item.nome }}</a>
+                        <span class="cart-item-preco">R$ {{ item.preco }}</span>
+                    </div>
+                    <div class="cart-item-qtd">
+                        <button onclick="atualizarQtd('{{ item.id }}', {{ item.quantidade }} - 1)" class="qtd-btn">−</button>
+                        <span id="qtd-{{ item.id }}" style="min-width:24px; text-align:center; font-family:'Space Grotesk',sans-serif; font-weight:700;">{{ item.quantidade }}</span>
+                        <button onclick="atualizarQtd('{{ item.id }}', {{ item.quantidade }} + 1)" class="qtd-btn">+</button>
+                    </div>
+                    <span class="cart-item-sub" id="sub-{{ item.id }}">R$ {{ item.subtotal|floatformat:2 }}</span>
+                    <form method="post" action="{% url 'carrinho:remover' item.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-remover" title="Remover">✕</button>
+                    </form>
                 </div>
-                <div class="carrinho-item-info">
-                    <a href="{% url 'produtos:detalhe' item.slug %}" class="carrinho-item-nome">{{ item.nome }}</a>
-                    <p class="carrinho-item-preco">R$ {{ item.preco }}</p>
-                </div>
-                <div class="carrinho-item-qtd">
-                    <button onclick="atualizarQtd('{{ id }}', {{ item.quantidade }} - 1)" class="qtd-btn">−</button>
-                    <span class="qtd-valor" id="qtd-{{ id }}">{{ item.quantidade }}</span>
-                    <button onclick="atualizarQtd('{{ id }}', {{ item.quantidade }} + 1)" class="qtd-btn">+</button>
-                </div>
-                <div class="carrinho-item-subtotal" id="sub-{{ id }}">
-                    R$ {% widthratio item.preco 1 item.quantidade %}
-                </div>
-                <form method="post" action="{% url 'carrinho:remover' id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-remover" title="Remover">✕</button>
-                </form>
             </div>
             {% endfor %}
         </div>
 
-        <div class="carrinho-resumo">
-            <h3 class="resumo-titulo">Resumo do Pedido</h3>
-            <div class="resumo-linha">
-                <span>Subtotal</span>
-                <span id="resumo-subtotal">R$ {{ subtotal|floatformat:2 }}</span>
-            </div>
-            <div class="resumo-linha">
-                <span>Frete</span>
-                <span id="resumo-frete">
-                    {% if frete == 0 %}
-                        <strong style="color: #10B981;">Grátis</strong>
-                    {% else %}
-                        R$ {{ frete|floatformat:2 }}
+        <aside class="cart-resumo-col">
+            <div class="cart-resumo-card">
+                <div class="aurora-bar aurora-bar-full"></div>
+                <div class="cart-resumo-body">
+                    <h3 class="resumo-h">Resumo do Pedido</h3>
+                    <div class="resumo-row"><span>Subtotal</span><span id="r-subtotal">R$ {{ subtotal|floatformat:2 }}</span></div>
+                    <div class="resumo-row">
+                        <span>Frete</span>
+                        <span id="r-frete">
+                            {% if frete == 0 %}<strong class="text-sucesso">Grátis ✅</strong>
+                            {% else %}R$ {{ frete|floatformat:2 }}{% endif %}
+                        </span>
+                    </div>
+                    {% if frete > 0 %}
+                    <p class="frete-hint">Frete grátis acima de R$ {{ frete_gratis_acima|floatformat:2 }}</p>
                     {% endif %}
-                </span>
+                    <div class="resumo-total"><span>Total</span><span id="r-total">R$ {{ total|floatformat:2 }}</span></div>
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'pedidos:checkout' %}" class="btn btn-primary btn-block">
+                        Finalizar Compra →
+                    </a>
+                    {% else %}
+                    <button type="button"
+                            class="btn btn-primary btn-block"
+                            data-google-login
+                            data-next="{% url 'pedidos:checkout' %}">
+                        🔐 Entrar para Finalizar
+                    </button>
+                    <p style="font-size:11px; text-align:center; margin-top:8px; color:var(--cor-texto-suave); line-height:1.5;">
+                        Ao entrar, coletamos nome, e-mail e foto do seu perfil Google conforme nossa
+                        <a href="{% url 'core:privacidade' %}" style="color:var(--cor-primaria);">Política de Privacidade</a>.
+                    </p>
+                    {% endif %}
+                    <a href="{% url 'produtos:lista' %}" class="btn-continuar">← Continuar Comprando</a>
+                </div>
             </div>
-            {% if frete > 0 %}
-            <p class="frete-info">
-                Frete grátis em compras acima de R$ {{ frete_gratis_acima|floatformat:2 }}
-            </p>
-            {% endif %}
-            <div class="resumo-total">
-                <span>Total</span>
-                <span id="resumo-total">R$ {{ total|floatformat:2 }}</span>
-            </div>
-            <a href="{% url 'pedidos:checkout' %}" class="btn btn-finalizar">
-                Finalizar Compra via WhatsApp
-            </a>
-            <a href="{% url 'produtos:lista' %}" class="btn btn-continuar">
-                ← Continuar Comprando
-            </a>
-        </div>
-
+        </aside>
     </div>
     {% else %}
-    <div class="empty-state" style="text-align:center; padding: 64px 0;">
-        <div style="font-size: 64px; margin-bottom: 16px;">🛒</div>
-        <h2>Seu carrinho está vazio</h2>
-        <p style="color:#6B7280; margin-bottom: 24px;">Adicione produtos para começar suas compras!</p>
-        <a href="{% url 'produtos:lista' %}" class="btn btn-primary">Ver Produtos</a>
+    <div class="empty-cart">
+        <div class="empty-icon">🛒</div>
+        <h2>Carrinho vazio</h2>
+        <p>Adicione produtos para começar!</p>
+        <a href="{% url 'produtos:lista' %}" class="btn btn-primary" style="margin-top:24px;">Ver Produtos</a>
     </div>
     {% endif %}
 </div>
@@ -87,36 +87,29 @@
 
 {% block extra_js %}
 <script>
-const CSRF_TOKEN = '{{ csrf_token }}';
-
-async function atualizarQtd(produtoId, novaQtd) {
-    const res = await fetch(`/carrinho/atualizar/${produtoId}/`, {
+async function atualizarQtd(id, qtd) {
+    const res = await fetch(`/carrinho/atualizar/${id}/`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': CSRF_TOKEN,
-        },
-        body: JSON.stringify({ quantidade: novaQtd }),
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+        body: JSON.stringify({ quantidade: qtd }),
     });
-    const data = await res.json();
-    if (data.success) {
-        if (novaQtd < 1) {
-            document.getElementById(`item-${produtoId}`)?.remove();
-        } else {
-            const qtdEl = document.getElementById(`qtd-${produtoId}`);
-            if (qtdEl) qtdEl.textContent = novaQtd;
-            const subEl = document.getElementById(`sub-${produtoId}`);
-            if (subEl) subEl.textContent = `R$ ${data.item_subtotal.toFixed(2)}`;
-        }
-        document.getElementById('resumo-subtotal').textContent = `R$ ${data.subtotal.toFixed(2)}`;
-        document.getElementById('resumo-frete').innerHTML = data.frete === 0
-            ? '<strong style="color:#10B981;">Grátis</strong>'
-            : `R$ ${data.frete.toFixed(2)}`;
-        document.getElementById('resumo-total').textContent = `R$ ${data.total.toFixed(2)}`;
-
-        const badge = document.querySelector('.cart-badge');
-        if (badge) badge.textContent = data.total_itens;
+    const d = await res.json();
+    if (!d.success) return;
+    if (qtd < 1) {
+        document.getElementById(`item-${id}`)?.remove();
+    } else {
+        const qEl = document.getElementById(`qtd-${id}`);
+        if (qEl) qEl.textContent = qtd;
+        const sEl = document.getElementById(`sub-${id}`);
+        if (sEl) sEl.textContent = `R$ ${d.item_subtotal.toFixed(2)}`;
     }
+    document.getElementById('r-subtotal').textContent = `R$ ${d.subtotal.toFixed(2)}`;
+    document.getElementById('r-frete').innerHTML = d.frete === 0
+        ? '<strong class="text-sucesso">Grátis ✅</strong>'
+        : `R$ ${d.frete.toFixed(2)}`;
+    document.getElementById('r-total').textContent = `R$ ${d.total.toFixed(2)}`;
+    const b = document.getElementById('cart-badge');
+    if (b) { b.textContent = d.total_itens; b.style.display = d.total_itens > 0 ? '' : 'none'; }
 }
 </script>
 {% endblock %}

@@ -1,25 +1,14 @@
-// Auto-gerar slug a partir do nome no formulário de produto/categoria
+// Auto-gerar slug a partir do nome
 document.addEventListener('DOMContentLoaded', function () {
-    const nomeInput = document.querySelector('input[name="nome"]');
-    const slugInput = document.querySelector('input[name="slug"]');
-
-    if (nomeInput && slugInput && !slugInput.value) {
-        nomeInput.addEventListener('input', function () {
-            slugInput.value = nomeInput.value
+    const nomeEl = document.querySelector('input[name="nome"]');
+    const slugEl = document.querySelector('input[name="slug"]');
+    if (nomeEl && slugEl && !slugEl.value) {
+        nomeEl.addEventListener('input', () => {
+            slugEl.value = nomeEl.value
                 .toLowerCase()
                 .normalize('NFD').replace(/[̀-ͯ]/g, '')
                 .replace(/[^a-z0-9\s-]/g, '')
-                .trim()
-                .replace(/\s+/g, '-');
+                .trim().replace(/\s+/g, '-');
         });
     }
-
-    // Confirmar exclusão
-    document.querySelectorAll('[data-confirm]').forEach(function (el) {
-        el.addEventListener('click', function (e) {
-            if (!confirm(el.dataset.confirm)) {
-                e.preventDefault();
-            }
-        });
-    });
 });

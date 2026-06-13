@@ -1,0 +1,90 @@
+{% extends 'painel/base_painel.html' %}
+
+{% block title %}LGPD — Logs de Consentimento{% endblock %}
+{% block page_title %}🔒 LGPD — Logs de Consentimento{% endblock %}
+{% block nav_lgpd %}ativo{% endblock %}
+
+{% block content %}
+<div class="p-section" style="margin-bottom:16px;">
+    <form method="get" style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+        <div>
+            <label class="form-label">Ação</label>
+            <select name="acao" class="fc" style="min-width:200px;">
+                <option value="">— Todas as ações —</option>
+                {% for val, label in acoes %}
+                <option value="{{ val }}" {% if acao_filtro == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="form-label">Data inicial</label>
+            <input type="date" name="data_ini" class="fc" value="{{ data_ini }}">
+        </div>
+        <div>
+            <label class="form-label">Data final</label>
+            <input type="date" name="data_fim" class="fc" value="{{ data_fim }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+        <a href="?{{ request.GET.urlencode }}&exportar=csv" class="btn btn-outline">⬇ Exportar CSV</a>
+    </form>
+</div>
+
+<div class="p-section">
+    <div class="p-section-header">
+        <h2 class="p-section-title">Registros encontrados: {{ total }}</h2>
+    </div>
+    <div class="table-wrap">
+        <table class="tabela">
+            <thead>
+                <tr>
+                    <th>Data/Hora</th>
+                    <th>Usuário</th>
+                    <th>Ação</th>
+                    <th>IP</th>
+                    <th>Detalhes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.data_hora|date:"d/m/Y H:i:s" }}</td>
+                    <td>
+                        {% if log.usuario %}
+                        <span style="color:var(--cor-acento);">{{ log.usuario.email }}</span>
+                        {% else %}
+                        <span class="text-suave">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if log.acao == 'aceite_cookies' %}
+                        <span class="status-badge" style="background:#4D6AFF22;color:#4D6AFF;border:1px solid #4D6AFF;">{{ log.get_acao_display }}</span>
+                        {% elif log.acao == 'consentimento_checkout' %}
+                        <span class="status-badge" style="background:#00C48C22;color:#00C48C;border:1px solid #00C48C;">{{ log.get_acao_display }}</span>
+                        {% elif log.acao == 'aceite_termos_google' %}
+                        <span class="status-badge" style="background:#FFB80022;color:#FFB800;border:1px solid #FFB800;">{{ log.get_acao_display }}</span>
+                        {% elif log.acao == 'exclusao_conta' %}
+                        <span class="status-badge" style="background:#FF3D3D22;color:#FF3D3D;border:1px solid #FF3D3D;">{{ log.get_acao_display }}</span>
+                        {% else %}
+                        <span class="status-badge">{{ log.get_acao_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-family:monospace; font-size:12px; color:var(--cor-texto-suave);">
+                        {{ log.ip_address|default:"—" }}
+                    </td>
+                    <td style="font-size:12px; color:var(--cor-texto-suave); max-width:260px; word-break:break-all;">
+                        {{ log.detalhes }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center text-suave">Nenhum registro encontrado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if total > 200 %}
+    <p style="color:var(--cor-texto-suave); font-size:13px; margin-top:12px; text-align:center;">
+        Exibindo os 200 registros mais recentes. Use os filtros ou exporte o CSV para ver todos.
+    </p>
+    {% endif %}
+</div>
+{% endblock %}

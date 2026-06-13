@@ -2,17 +2,13 @@
 
 {% block title %}{{ titulo }}{% endblock %}
 {% block page_title %}{{ titulo }}{% endblock %}
-{% block nav_produtos %}ativo{% endblock %}
-
-{% block topbar_actions %}
-<a href="{% url 'painel:produtos' %}" class="btn btn-outline">← Voltar</a>
-{% endblock %}
+{% block nav_prod %}ativo{% endblock %}
+{% block topbar_actions %}<a href="{% url 'painel:produtos' %}" class="btn btn-outline">← Voltar</a>{% endblock %}
 
 {% block content %}
-<div class="form-painel-card">
+<div class="form-card">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-
         <div class="form-grid-2">
             <div class="form-group">
                 <label class="form-label">Nome</label>
@@ -22,15 +18,12 @@
             <div class="form-group">
                 <label class="form-label">Slug</label>
                 {{ form.slug }}
-                {% if form.slug.errors %}<p class="form-error">{{ form.slug.errors.0 }}</p>{% endif %}
             </div>
         </div>
-
         <div class="form-group">
             <label class="form-label">Descrição</label>
             {{ form.descricao }}
         </div>
-
         <div class="form-grid-3">
             <div class="form-group">
                 <label class="form-label">Preço (R$)</label>
@@ -38,7 +31,7 @@
                 {% if form.preco.errors %}<p class="form-error">{{ form.preco.errors.0 }}</p>{% endif %}
             </div>
             <div class="form-group">
-                <label class="form-label">Preço Promocional (R$)</label>
+                <label class="form-label">Preço Promocional</label>
                 {{ form.preco_promocional }}
             </div>
             <div class="form-group">
@@ -46,33 +39,23 @@
                 {{ form.estoque }}
             </div>
         </div>
-
         <div class="form-group">
             <label class="form-label">Categoria</label>
             {{ form.categoria }}
         </div>
-
         <div class="form-group">
             <label class="form-label">Imagem Principal</label>
             {% if produto.imagem_principal %}
-            <div class="img-preview-wrap">
-                <img src="{{ produto.imagem_principal.url }}" alt="" class="img-preview" id="preview-img">
-            </div>
+            <img src="{{ produto.imagem_principal.url }}" id="preview-img" class="img-preview">
             {% else %}
-            <img src="" alt="" class="img-preview" id="preview-img" style="display:none;">
+            <img src="" id="preview-img" class="img-preview" style="display:none;">
             {% endif %}
             {{ form.imagem_principal }}
         </div>
-
         <div class="form-checks">
-            <label class="check-label">
-                {{ form.ativo }} Produto Ativo
-            </label>
-            <label class="check-label">
-                {{ form.destaque }} Produto em Destaque
-            </label>
+            <label class="check-label">{{ form.ativo }} Ativo</label>
+            <label class="check-label">{{ form.destaque }} Destaque</label>
         </div>
-
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Salvar Produto</button>
             <a href="{% url 'painel:produtos' %}" class="btn btn-outline">Cancelar</a>
@@ -83,16 +66,12 @@
 
 {% block extra_js %}
 <script>
-document.querySelector('input[type="file"]').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            const img = document.getElementById('preview-img');
-            img.src = ev.target.result;
-            img.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
+document.querySelector('input[type="file"]')?.addEventListener('change', function(e) {
+    const f = e.target.files[0];
+    if (f) {
+        const r = new FileReader();
+        r.onload = ev => { const img = document.getElementById('preview-img'); img.src = ev.target.result; img.style.display = 'block'; };
+        r.readAsDataURL(f);
     }
 });
 </script>

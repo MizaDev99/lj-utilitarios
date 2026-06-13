@@ -1,49 +1,37 @@
-// Adicionar ao carrinho via AJAX (formulários nos cards de produto)
+// AJAX para adicionar ao carrinho nos cards de produto
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.add-cart-form').forEach(function (form) {
+    document.querySelectorAll('.add-cart-form').forEach(form => {
         form.addEventListener('submit', async function (e) {
             e.preventDefault();
-            const url = form.action;
-            const formData = new FormData(form);
-
+            const fd = new FormData(form);
             try {
-                const res = await fetch(url, {
+                const res = await fetch(form.action, {
                     method: 'POST',
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                        'X-CSRFToken': fd.get('csrfmiddlewaretoken'),
                     },
-                    body: formData,
+                    body: fd,
                 });
                 const data = await res.json();
-
                 if (data.success) {
-                    const badge = document.querySelector('.cart-badge');
+                    const badge = document.getElementById('cart-badge');
                     if (badge) {
                         badge.textContent = data.total_itens;
-                    } else {
-                        const cartBtn = document.querySelector('.cart-btn');
-                        if (cartBtn) {
-                            const newBadge = document.createElement('span');
-                            newBadge.className = 'cart-badge';
-                            newBadge.textContent = data.total_itens;
-                            cartBtn.appendChild(newBadge);
-                        }
+                        badge.style.display = data.total_itens > 0 ? '' : 'none';
                     }
-
                     const btn = form.querySelector('.btn-add-cart');
                     if (btn) {
-                        const original = btn.textContent;
+                        const orig = btn.textContent;
                         btn.textContent = '✓ Adicionado!';
-                        btn.style.background = '#059669';
+                        btn.style.background = 'linear-gradient(90deg, #059669, #00C48C)';
                         setTimeout(() => {
-                            btn.textContent = original;
+                            btn.textContent = orig;
                             btn.style.background = '';
                         }, 1500);
                     }
                 }
             } catch (err) {
-                console.error('Erro ao adicionar ao carrinho:', err);
                 form.submit();
             }
         });

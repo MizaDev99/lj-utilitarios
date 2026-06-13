@@ -2,90 +2,158 @@
 
 {% block title %}Configurações{% endblock %}
 {% block page_title %}Configurações da Loja{% endblock %}
-{% block nav_config %}ativo{% endblock %}
+{% block nav_cfg %}ativo{% endblock %}
 
 {% block content %}
-<div class="form-painel-card">
+<div class="form-card">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <h3 class="form-section-titulo">🏪 Informações da Loja</h3>
+        <h3 class="form-section-h">🏪 Loja</h3>
         <div class="form-grid-2">
-            <div class="form-group">
-                <label class="form-label">{{ form.nome_loja.label }}</label>
-                {{ form.nome_loja }}
-                {% if form.nome_loja.errors %}<p class="form-error">{{ form.nome_loja.errors.0 }}</p>{% endif %}
-            </div>
-            <div class="form-group">
-                <label class="form-label">{{ form.cor_primaria.label }}</label>
-                {{ form.cor_primaria }}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="form-label">{{ form.logo.label }}</label>
-            {% if config.logo %}
-            <div style="margin-bottom:8px;"><img src="{{ config.logo.url }}" alt="Logo" style="height:60px;"></div>
-            {% endif %}
-            {{ form.logo }}
+            <div class="form-group"><label class="form-label">{{ form.nome_loja.label }}</label>{{ form.nome_loja }}</div>
         </div>
 
-        <h3 class="form-section-titulo" style="margin-top:32px;">📱 WhatsApp</h3>
-        <div class="form-group">
-            <label class="form-label">{{ form.whatsapp_numero.label }}</label>
-            {{ form.whatsapp_numero }}
-            {% if form.whatsapp_numero.help_text %}
-            <p class="form-help">{{ form.whatsapp_numero.help_text }}</p>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            <label class="form-label">{{ form.whatsapp_mensagem_template.label }}</label>
-            {{ form.whatsapp_mensagem_template }}
-            <p class="form-help">Variáveis: {{numero}}, {{nome}}, {{cidade}}, {{telefone}}, {{endereco}}, {{lista_itens}}, {{subtotal}}, {{frete}}, {{total}}, {{observacoes}}</p>
-        </div>
-
-        <h3 class="form-section-titulo" style="margin-top:32px;">📍 Atendimento</h3>
+        <h3 class="form-section-h" style="margin-top:28px;">🎨 Identidade Visual</h3>
         <div class="form-grid-2">
             <div class="form-group">
-                <label class="form-label">{{ form.cidade_base.label }}</label>
-                {{ form.cidade_base }}
+                <label class="form-label">{{ form.logo.label }}</label>
+                <p class="form-help">PNG transparente · ideal 200×200px</p>
+                {% if config.logo %}
+                <div style="margin-bottom:10px;">
+                    <img id="preview-logo" src="{{ config.logo.url }}"
+                         style="height:80px; border-radius:8px; border:1px solid var(--cor-borda); padding:6px; background:#f8f4ff;">
+                </div>
+                {% else %}
+                <div style="margin-bottom:10px;">
+                    <img id="preview-logo" src="" alt="" style="height:80px; display:none; border-radius:8px;">
+                </div>
+                {% endif %}
+                <input type="file" name="logo" accept="image/png,image/jpeg,image/webp"
+                       class="fc" onchange="previewImg(this,'preview-logo')">
+                {% if config.logo %}
+                <label style="margin-top:6px; display:flex; align-items:center; gap:6px; font-size:12px; color:var(--cor-texto-suave); cursor:pointer;">
+                    <input type="checkbox" name="logo-clear" value="1"> Remover logo atual
+                </label>
+                {% endif %}
             </div>
             <div class="form-group">
-                <label class="form-label">{{ form.cidades_atendidas.label }}</label>
-                {{ form.cidades_atendidas }}
-                {% if form.cidades_atendidas.help_text %}
-                <p class="form-help">{{ form.cidades_atendidas.help_text }}</p>
+                <label class="form-label">{{ form.logo_navbar.label }}</label>
+                <p class="form-help">Versão horizontal para a navbar · PNG transparente · ideal 240×80px</p>
+                {% if config.logo_navbar %}
+                <div style="margin-bottom:10px;">
+                    <img id="preview-logo-navbar" src="{{ config.logo_navbar.url }}"
+                         style="height:40px; border-radius:6px; border:1px solid var(--cor-borda); padding:6px; background:#f8f4ff;">
+                </div>
+                {% else %}
+                <div style="margin-bottom:10px;">
+                    <img id="preview-logo-navbar" src="" alt="" style="height:40px; display:none; border-radius:6px;">
+                </div>
+                {% endif %}
+                <input type="file" name="logo_navbar" accept="image/png,image/jpeg,image/webp"
+                       class="fc" onchange="previewImg(this,'preview-logo-navbar')">
+                {% if config.logo_navbar %}
+                <label style="margin-top:6px; display:flex; align-items:center; gap:6px; font-size:12px; color:var(--cor-texto-suave); cursor:pointer;">
+                    <input type="checkbox" name="logo_navbar-clear" value="1"> Remover logo navbar
+                </label>
                 {% endif %}
             </div>
         </div>
 
-        <h3 class="form-section-titulo" style="margin-top:32px;">🚚 Frete</h3>
+        <h3 class="form-section-h" style="margin-top:32px;">📱 WhatsApp</h3>
+        <div class="form-group"><label class="form-label">{{ form.whatsapp_numero.label }}</label>{{ form.whatsapp_numero }}</div>
+        <div class="form-group">
+            <label class="form-label">{{ form.whatsapp_mensagem_template.label }}</label>
+            {{ form.whatsapp_mensagem_template }}
+            <p class="form-help">Variáveis: &#123;&#123;numero&#125;&#125;, &#123;&#123;nome&#125;&#125;, &#123;&#123;cidade&#125;&#125;, &#123;&#123;telefone&#125;&#125;, &#123;&#123;endereco&#125;&#125;, &#123;&#123;lista_itens&#125;&#125;, &#123;&#123;subtotal&#125;&#125;, &#123;&#123;frete&#125;&#125;, &#123;&#123;total&#125;&#125;, &#123;&#123;observacoes&#125;&#125;</p>
+        </div>
+
+        <h3 class="form-section-h" style="margin-top:32px;">📍 Atendimento</h3>
         <div class="form-grid-2">
-            <div class="form-group">
-                <label class="form-label">{{ form.frete_fixo.label }}</label>
-                {{ form.frete_fixo }}
+            <div class="form-group"><label class="form-label">{{ form.cidade_base.label }}</label>{{ form.cidade_base }}</div>
+            <div class="form-group"><label class="form-label">{{ form.cidades_atendidas.label }}</label>{{ form.cidades_atendidas }}</div>
+        </div>
+
+        <h3 class="form-section-h" style="margin-top:32px;">🚚 Fretes por Cidade</h3>
+        <div class="info-box" style="margin-bottom:16px;">
+            ⚠️ Três Rios é a cidade da loja. As demais devem ter frete maior pela distância.
+        </div>
+        <div class="fretes-table">
+            <div class="frete-row frete-row-header">
+                <span>Cidade</span><span>Frete (R$)</span>
             </div>
-            <div class="form-group">
-                <label class="form-label">{{ form.frete_gratis_acima.label }}</label>
-                {{ form.frete_gratis_acima }}
+            <div class="frete-row frete-row-destaque">
+                <span>📍 Três Rios, RJ <em class="frete-tag">cidade da loja</em></span>
+                <div class="form-group" style="margin:0;">{{ form.frete_tres_rios }}</div>
+            </div>
+            <div class="frete-row">
+                <span>Comendador Levy Gasparian</span>
+                <div class="form-group" style="margin:0;">{{ form.frete_levy }}</div>
+            </div>
+            <div class="frete-row">
+                <span>Paraíba do Sul</span>
+                <div class="form-group" style="margin:0;">{{ form.frete_paraiba_sul }}</div>
+            </div>
+            <div class="frete-row">
+                <span>Bemposta</span>
+                <div class="form-group" style="margin:0;">{{ form.frete_bemposta }}</div>
+            </div>
+            <div class="frete-row">
+                <span>Areal</span>
+                <div class="form-group" style="margin:0;">{{ form.frete_areal }}</div>
             </div>
         </div>
 
-        <h3 class="form-section-titulo" style="margin-top:32px;">🖼️ Banner</h3>
-        <div class="form-group">
-            <label class="form-label">{{ form.texto_banner.label }}</label>
-            {{ form.texto_banner }}
+        <h3 class="form-section-h" style="margin-top:32px;">💰 Pagamento — Pix</h3>
+        <div class="form-grid-2">
+            <div class="form-group">
+                <label class="form-label">{{ form.chave_pix.label }}</label>
+                {{ form.chave_pix }}
+                <p class="form-help">Deixe em branco para ocultar no checkout.</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">{{ form.tipo_chave_pix.label }}</label>
+                {{ form.tipo_chave_pix }}
+            </div>
         </div>
-        <div class="form-group">
-            <label class="form-label">{{ form.banner_principal.label }}</label>
-            {% if config.banner_principal %}
-            <div style="margin-bottom:8px;"><img src="{{ config.banner_principal.url }}" alt="Banner" style="height:80px; border-radius:4px;"></div>
-            {% endif %}
+        {% if config.chave_pix %}
+        <div class="pix-preview">
+            <span class="pix-preview-label">Preview no checkout:</span>
+            <span class="pix-preview-tipo">{{ config.get_tipo_pix_label }}</span>
+            <span class="pix-preview-chave">{{ config.chave_pix }}</span>
+        </div>
+        {% endif %}
+
+        <h3 class="form-section-h" style="margin-top:32px;">🚚 Frete Legado</h3>
+        <div class="form-grid-2">
+            <div class="form-group"><label class="form-label">{{ form.frete_fixo.label }}</label>{{ form.frete_fixo }}</div>
+            <div class="form-group"><label class="form-label">{{ form.frete_gratis_acima.label }}</label>{{ form.frete_gratis_acima }}</div>
+        </div>
+
+        <h3 class="form-section-h" style="margin-top:32px;">🖼️ Banner</h3>
+        <div class="form-grid-2">
+            <div class="form-group"><label class="form-label">{{ form.texto_banner.label }}</label>{{ form.texto_banner }}</div>
+            <div class="form-group"><label class="form-label">{{ form.subtexto_banner.label }}</label>{{ form.subtexto_banner }}</div>
+        </div>
+        <div class="form-group"><label class="form-label">{{ form.banner_principal.label }}</label>
+            {% if config.banner_principal %}<img src="{{ config.banner_principal.url }}" style="height:64px;margin-bottom:8px;border-radius:4px;">{% endif %}
             {{ form.banner_principal }}
         </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Salvar Configurações</button>
-        </div>
+        <div class="form-actions"><button type="submit" class="btn btn-primary">Salvar Configurações</button></div>
     </form>
 </div>
+
+<script>
+function previewImg(input, previewId) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        const img = document.getElementById(previewId);
+        if (img) { img.src = e.target.result; img.style.display = ''; }
+    };
+    reader.readAsDataURL(file);
+}
+</script>
 {% endblock %}

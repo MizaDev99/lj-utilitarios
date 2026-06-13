@@ -2,75 +2,46 @@
 
 {% block title %}Produtos{% endblock %}
 {% block page_title %}Produtos{% endblock %}
-{% block nav_produtos %}ativo{% endblock %}
-
-{% block topbar_actions %}
-<a href="{% url 'painel:produto_criar' %}" class="btn btn-primary">+ Novo Produto</a>
-{% endblock %}
+{% block nav_prod %}ativo{% endblock %}
+{% block topbar_actions %}<a href="{% url 'painel:produto_criar' %}" class="btn btn-primary">+ Novo Produto</a>{% endblock %}
 
 {% block content %}
-<div class="painel-section">
-    <form method="get" class="search-bar-painel">
-        <input type="text" name="q" class="form-control" placeholder="Buscar produto..." value="{{ busca }}">
+<div class="p-section">
+    <form method="get" class="search-bar-p">
+        <input type="text" name="q" class="fc" placeholder="Buscar produto..." value="{{ busca }}">
         <button type="submit" class="btn btn-outline">Buscar</button>
     </form>
-
     <div class="table-wrap">
         <table class="tabela">
-            <thead>
-                <tr>
-                    <th>Imagem</th>
-                    <th>Nome</th>
-                    <th>Categoria</th>
-                    <th>Preço</th>
-                    <th>Estoque</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
+            <thead><tr><th>Img</th><th>Nome</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Status</th><th>Ações</th></tr></thead>
             <tbody>
-                {% for produto in produtos %}
+                {% for p in produtos %}
                 <tr>
+                    <td>{% if p.imagem_principal %}<img src="{{ p.imagem_principal.url }}" class="tabela-thumb">{% else %}<div class="no-img-xs">🔧</div>{% endif %}</td>
                     <td>
-                        {% if produto.imagem_principal %}
-                        <img src="{{ produto.imagem_principal.url }}" alt="" class="tabela-thumb">
-                        {% else %}
-                        <div class="no-img-xs">📦</div>
-                        {% endif %}
+                        <strong>{{ p.nome }}</strong>
+                        {% if p.destaque %}<span class="badge-mini" style="background:#FFB80022;color:#FFB800;border:1px solid #FFB800;">⭐</span>{% endif %}
+                        {% if p.tem_promocao %}<span class="badge-mini" style="background:#FF3D3D22;color:#FF3D3D;border:1px solid #FF3D3D;">🔥</span>{% endif %}
                     </td>
+                    <td>{{ p.categoria.nome|default:"—" }}</td>
                     <td>
-                        <strong>{{ produto.nome }}</strong>
-                        {% if produto.destaque %}<span class="badge-mini badge-destaque">⭐ Destaque</span>{% endif %}
-                        {% if produto.tem_promocao %}<span class="badge-mini badge-oferta-mini">🔥 Oferta</span>{% endif %}
+                        {% if p.tem_promocao %}
+                        <span style="text-decoration:line-through;color:#B0B8D1;font-size:12px;">R$ {{ p.preco }}</span><br>
+                        <strong style="color:#00C48C;">R$ {{ p.preco_promocional }}</strong>
+                        {% else %}R$ {{ p.preco }}{% endif %}
                     </td>
-                    <td>{{ produto.categoria.nome|default:"—" }}</td>
+                    <td><span {% if p.estoque == 0 %}style="color:#FF3D3D;font-weight:700;"{% elif p.estoque < 5 %}style="color:#FFB800;"{% endif %}>{{ p.estoque }}</span></td>
                     <td>
-                        {% if produto.tem_promocao %}
-                        <span style="text-decoration:line-through; color:#9CA3AF; font-size:12px;">R$ {{ produto.preco }}</span><br>
-                        <strong>R$ {{ produto.preco_promocional }}</strong>
-                        {% else %}
-                        R$ {{ produto.preco }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        <span class="{% if produto.estoque == 0 %}text-danger{% elif produto.estoque < 5 %}text-warning{% endif %}">
-                            {{ produto.estoque }}
-                        </span>
-                    </td>
-                    <td>
-                        {% if produto.ativo %}
-                        <span class="status-badge" style="background:#D1FAE5;color:#065F46;border:1px solid #10B981;">Ativo</span>
-                        {% else %}
-                        <span class="status-badge" style="background:#FEE2E2;color:#991B1B;border:1px solid #EF4444;">Inativo</span>
-                        {% endif %}
+                        {% if p.ativo %}<span class="status-badge" style="background:#00C48C22;color:#00C48C;border:1px solid #00C48C;">Ativo</span>
+                        {% else %}<span class="status-badge" style="background:#FF3D3D22;color:#FF3D3D;border:1px solid #FF3D3D;">Inativo</span>{% endif %}
                     </td>
                     <td class="acoes-col">
-                        <a href="{% url 'painel:produto_editar' produto.pk %}" class="btn btn-sm btn-outline">Editar</a>
-                        <a href="{% url 'painel:produto_deletar' produto.pk %}" class="btn btn-sm btn-danger">Excluir</a>
+                        <a href="{% url 'painel:produto_editar' p.pk %}" class="btn btn-sm btn-outline">Editar</a>
+                        <a href="{% url 'painel:produto_deletar' p.pk %}" class="btn btn-sm btn-danger">Excluir</a>
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="7" class="text-center">Nenhum produto encontrado.</td></tr>
+                <tr><td colspan="7" class="text-center text-suave">Nenhum produto.</td></tr>
                 {% endfor %}
             </tbody>
         </table>

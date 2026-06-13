@@ -1,74 +1,62 @@
 {% extends 'base.html' %}
-{% load static %}
 
-{% block title %}
-    {% if categoria_atual %}{{ categoria_atual.nome }} — {% endif %}
-    {% if busca %}Busca: {{ busca }} — {% endif %}
-    Produtos — {{ config.nome_loja }}
-{% endblock %}
+{% block title %}{% if categoria_atual %}{{ categoria_atual.nome }} — {% endif %}{% if busca %}{{ busca }} — {% endif %}Produtos — {{ config.nome_loja }}{% endblock %}
 
 {% block content %}
-<div class="container" style="padding-top: 24px; padding-bottom: 48px;">
-
+<div class="container" style="padding-top:32px; padding-bottom:64px;">
     <div class="listagem-layout">
 
-        <aside class="filtros-sidebar">
-            <h3 class="filtros-titulo">Categorias</h3>
-            <ul class="filtros-lista">
-                <li>
-                    <a href="{% url 'produtos:lista' %}{% if busca %}?q={{ busca }}{% endif %}"
-                       class="filtro-link {% if not categoria_atual %}ativo{% endif %}">
-                        Todos os Produtos
-                    </a>
-                </li>
-                {% for cat in categorias %}
-                <li>
-                    <a href="{% url 'produtos:lista' %}?categoria={{ cat.slug }}{% if busca %}&q={{ busca }}{% endif %}"
-                       class="filtro-link {% if categoria_atual.slug == cat.slug %}ativo{% endif %}">
-                        {% if cat.icone %}{{ cat.icone }} {% endif %}{{ cat.nome }}
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
+        <aside class="sidebar-filtros">
+            <div class="aurora-bar aurora-bar-1"></div>
+            <div class="sidebar-filtros-body">
+                <h3 class="filtros-h">Categorias</h3>
+                <ul class="filtros-lista">
+                    <li>
+                        <a href="{% url 'produtos:lista' %}{% if busca %}?q={{ busca }}{% endif %}"
+                           class="filtro-link {% if not categoria_atual %}ativo{% endif %}">🏷️ Todos</a>
+                    </li>
+                    {% for cat in categorias %}
+                    <li>
+                        <a href="{% url 'produtos:lista' %}?categoria={{ cat.slug }}{% if busca %}&q={{ busca }}{% endif %}"
+                           class="filtro-link {% if categoria_atual.slug == cat.slug %}ativo{% endif %}">
+                            {{ cat.icone_emoji|default:'•' }} {{ cat.nome }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
 
-            <h3 class="filtros-titulo" style="margin-top: 24px;">Ordenar</h3>
-            <ul class="filtros-lista">
-                {% with base="?"|add:categoria_atual.slug|default:"" %}
-                <li><a href="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}" class="filtro-link {% if not ordem %}ativo{% endif %}">Relevância</a></li>
-                <li><a href="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}ordem=mais_novo" class="filtro-link {% if ordem == 'mais_novo' %}ativo{% endif %}">Mais novos</a></li>
-                <li><a href="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}ordem=menor_preco" class="filtro-link {% if ordem == 'menor_preco' %}ativo{% endif %}">Menor preço</a></li>
-                <li><a href="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}ordem=maior_preco" class="filtro-link {% if ordem == 'maior_preco' %}ativo{% endif %}">Maior preço</a></li>
-                {% endwith %}
-            </ul>
+                <h3 class="filtros-h" style="margin-top:24px;">Ordenar</h3>
+                <ul class="filtros-lista">
+                    <li><a href="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}" class="filtro-link {% if not ordem %}ativo{% endif %}">Relevância</a></li>
+                    <li><a href="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}ordem=mais_novo" class="filtro-link {% if ordem == 'mais_novo' %}ativo{% endif %}">Mais novos</a></li>
+                    <li><a href="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}ordem=menor_preco" class="filtro-link {% if ordem == 'menor_preco' %}ativo{% endif %}">Menor preço</a></li>
+                    <li><a href="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}ordem=maior_preco" class="filtro-link {% if ordem == 'maior_preco' %}ativo{% endif %}">Maior preço</a></li>
+                </ul>
+            </div>
         </aside>
 
         <div class="listagem-main">
             <div class="listagem-header">
-                {% if busca %}
-                    <h1 class="listagem-titulo">Resultados para "{{ busca }}"</h1>
-                {% elif categoria_atual %}
-                    <h1 class="listagem-titulo">{{ categoria_atual.icone }} {{ categoria_atual.nome }}</h1>
-                {% else %}
-                    <h1 class="listagem-titulo">Todos os Produtos</h1>
-                {% endif %}
+                <h1 class="listagem-titulo">
+                    {% if busca %}Resultados: "{{ busca }}"
+                    {% elif categoria_atual %}{{ categoria_atual.icone_emoji }} {{ categoria_atual.nome }}
+                    {% else %}Todos os Produtos{% endif %}
+                </h1>
                 <span class="listagem-count">{{ produtos|length }} produto{{ produtos|length|pluralize }}</span>
             </div>
 
             {% if produtos %}
             <div class="produtos-grid">
-                {% for produto in produtos %}
-                {% include 'produtos/_card.html' %}
-                {% endfor %}
+                {% for produto in produtos %}{% include 'produtos/_card.html' %}{% endfor %}
             </div>
             {% else %}
             <div class="empty-state">
-                <p>😕 Nenhum produto encontrado.</p>
-                <a href="{% url 'produtos:lista' %}" class="btn btn-primary">Ver todos</a>
+                <p style="font-size:48px; margin-bottom:16px;">😕</p>
+                <p style="font-size:17px; margin-bottom:20px;">Nenhum produto encontrado.</p>
+                <a href="{% url 'produtos:lista' %}" class="btn btn-primary">Ver todos os produtos</a>
             </div>
             {% endif %}
         </div>
-
     </div>
 </div>
 {% endblock %}
-

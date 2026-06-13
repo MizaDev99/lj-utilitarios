@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Política de Privacidade — {{ config.nome_loja }}{% endblock %}
+
+{% block content %}
+<div class="legal-page">
+    <h1>🔒 Política de Privacidade</h1>
+    <p class="legal-meta">{{ config.nome_loja }} — Última atualização: junho de 2025 &nbsp;|&nbsp; CNPJ/CPF do responsável disponível sob solicitação</p>
+
+    <h2>1. Quais dados coletamos</h2>
+    <p>Ao realizar um pedido ou se cadastrar na plataforma, coletamos os seguintes dados pessoais:</p>
+    <ul>
+        <li><strong>Nome completo</strong></li>
+        <li><strong>Número de telefone / WhatsApp</strong></li>
+        <li><strong>Cidade e endereço de entrega</strong></li>
+        <li><strong>Endereço de e-mail</strong> (apenas em cadastros via Google)</li>
+        <li><strong>Foto de perfil</strong> (apenas em cadastros via Google, fornecida pelo próprio usuário)</li>
+        <li><strong>Endereço IP</strong> (para segurança e conformidade legal)</li>
+    </ul>
+
+    <h2>2. Para qual finalidade usamos seus dados</h2>
+    <p>Seus dados são utilizados <strong>exclusivamente</strong> para:</p>
+    <ul>
+        <li>Processar e entregar seus pedidos</li>
+        <li>Entrar em contato via WhatsApp para confirmação e atualização do pedido</li>
+        <li>Identificar sua conta na plataforma</li>
+        <li>Cumprir obrigações legais</li>
+    </ul>
+    <p><strong>Seus dados não são vendidos, alugados ou compartilhados com terceiros para fins comerciais.</strong></p>
+
+    <h2>3. Como os dados são armazenados</h2>
+    <p>Os dados são armazenados em banco de dados PostgreSQL hospedado na plataforma <strong>Supabase</strong>, com criptografia em repouso e em trânsito (TLS/SSL). O acesso é restrito ao responsável pela loja.</p>
+
+    <h2>4. Por quanto tempo mantemos seus dados</h2>
+    <ul>
+        <li><strong>Dados de pedido:</strong> mantidos por até 5 anos (prazo fiscal e legal)</li>
+        <li><strong>Dados de conta:</strong> mantidos enquanto a conta estiver ativa ou até solicitação de exclusão</li>
+        <li><strong>Logs de consentimento:</strong> mantidos por 5 anos conforme exigido pela LGPD</li>
+    </ul>
+
+    <h2>5. Cookies e sessões</h2>
+    <p>Utilizamos <strong>apenas cookies essenciais e funcionais</strong>:</p>
+    <ul>
+        <li><code>sessionid</code> — mantém sua sessão ativa e os itens do carrinho</li>
+        <li><code>csrftoken</code> — proteção contra ataques CSRF</li>
+    </ul>
+    <p><strong>Não utilizamos cookies de rastreamento, publicidade ou analytics de terceiros.</strong></p>
+
+    <h2>6. Seus direitos como titular</h2>
+    <p>Nos termos da Lei Geral de Proteção de Dados (Lei nº 13.709/2018), você tem direito a:</p>
+    <ul>
+        <li>✅ <strong>Acesso</strong> — ver todos os seus dados armazenados</li>
+        <li>✅ <strong>Correção</strong> — corrigir dados incorretos ou desatualizados</li>
+        <li>✅ <strong>Exclusão</strong> — solicitar a remoção total dos seus dados</li>
+        <li>✅ <strong>Portabilidade</strong> — exportar seus dados em formato legível</li>
+        <li>✅ <strong>Revogação do consentimento</strong> — retirar o consentimento a qualquer momento</li>
+    </ul>
+    {% if request.user.is_authenticated %}
+    <p>Acesse <a href="{% url 'autenticacao:meus_dados' %}" class="link-lgpd">Meus Dados</a> para exercer seus direitos diretamente na plataforma.</p>
+    {% endif %}
+
+    <h2>7. Canal de contato do responsável</h2>
+    <p>Para exercer seus direitos ou tirar dúvidas sobre privacidade, entre em contato:</p>
+    {% if config.whatsapp_numero %}
+    <p>📱 WhatsApp: <a href="https://wa.me/55{{ config.whatsapp_numero }}" class="link-lgpd" target="_blank">{{ config.whatsapp_numero }}</a></p>
+    {% endif %}
+    <p>Responderemos em até 15 dias úteis.</p>
+
+    <h2>8. Alterações nesta política</h2>
+    <p>Esta política pode ser atualizada. Em caso de alterações significativas, informaremos pelo WhatsApp ou e-mail cadastrado. A data da última atualização sempre será indicada no topo desta página.</p>
+
+    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--cor-borda);">
+        <a href="{% url 'core:homepage' %}" class="btn btn-outline-light">← Voltar</a>
+        &nbsp;
+        <a href="{% url 'core:termos' %}" class="btn btn-outline-purple">Termos de Uso →</a>
+    </div>
+</div>
+{% endblock %}
