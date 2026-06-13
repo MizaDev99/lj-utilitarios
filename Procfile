@@ -1,1 +1,1 @@
-web: cd localshop && python manage.py migrate --run-syncdb && python manage.py collectstatic --noinput && gunicorn localshop.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+web: cd localshop && python manage.py migrate && python manage.py collectstatic --noinput && (python manage.py shell -c "from produtos.models import Produto; import sys; sys.exit(0 if Produto.objects.exists() else 1)" || python manage.py loaddata ../fixtures.json) && gunicorn localshop.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120

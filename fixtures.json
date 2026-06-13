@@ -1,0 +1,189 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$hSNMoW7rFdAA2Fn9bLwd3s$Fu5FeUR9Ari8PpB5iZLfQjXup1Owpv2dwxlsjo88G7w=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@localshop.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-05-31T20:15:17.668Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "core.configuracao",
+  "pk": 1,
+  "fields": {
+    "nome_loja": "LocalShop",
+    "whatsapp_numero": "11999999999",
+    "whatsapp_mensagem_template": "🛒 *Novo Pedido #{{numero}}*\n\n👤 Cliente: {{nome}}\n📍 Cidade: {{cidade}}\n📞 Telefone: {{telefone}}\n🏠 Endereço: {{endereco}}\n\n*Itens:*\n{{lista_itens}}\n\n💰 Subtotal: R$ {{subtotal}}\n🚚 Frete: R$ {{frete}}\n💵 *Total: R$ {{total}}*\n\n📝 Obs: {{observacoes}}",
+    "cidade_base": "São Paulo",
+    "cidades_atendidas": "São Paulo, Guarulhos, Osasco, Santo André, São Bernardo do Campo",
+    "logo": "",
+    "cor_primaria": "#FF6B00",
+    "banner_principal": "",
+    "texto_banner": "As melhores ofertas da sua cidade!",
+    "frete_fixo": "10.00",
+    "frete_gratis_acima": "150.00"
+  }
+},
+{
+  "model": "produtos.categoria",
+  "pk": 1,
+  "fields": {
+    "nome": "Eletrônicos",
+    "slug": "eletronicos",
+    "icone": "📱",
+    "ativo": true
+  }
+},
+{
+  "model": "produtos.categoria",
+  "pk": 2,
+  "fields": {
+    "nome": "Roupas",
+    "slug": "roupas",
+    "icone": "👕",
+    "ativo": true
+  }
+},
+{
+  "model": "produtos.categoria",
+  "pk": 3,
+  "fields": {
+    "nome": "Alimentos",
+    "slug": "alimentos",
+    "icone": "🍎",
+    "ativo": true
+  }
+},
+{
+  "model": "produtos.categoria",
+  "pk": 4,
+  "fields": {
+    "nome": "Casa e Jardim",
+    "slug": "casa-jardim",
+    "icone": "🏠",
+    "ativo": true
+  }
+},
+{
+  "model": "produtos.categoria",
+  "pk": 5,
+  "fields": {
+    "nome": "Esportes",
+    "slug": "esportes",
+    "icone": "⚽",
+    "ativo": true
+  }
+},
+{
+  "model": "produtos.produto",
+  "pk": 1,
+  "fields": {
+    "nome": "Smartphone Android 128GB",
+    "slug": "smartphone-android-128gb",
+    "descricao": "Smartphone moderno com tela de 6.5\", câmera de 48MP, bateria de 5000mAh e 128GB de armazenamento interno.",
+    "preco": "899.90",
+    "preco_promocional": "749.90",
+    "estoque": 15,
+    "categoria": 1,
+    "imagem_principal": "",
+    "ativo": true,
+    "destaque": true,
+    "criado_em": "2026-05-31T20:15:18.214Z"
+  }
+},
+{
+  "model": "produtos.produto",
+  "pk": 2,
+  "fields": {
+    "nome": "Fone de Ouvido Bluetooth",
+    "slug": "fone-ouvido-bluetooth",
+    "descricao": "Fone sem fio com cancelamento de ruído, 30h de bateria e som de alta qualidade.",
+    "preco": "199.90",
+    "preco_promocional": null,
+    "estoque": 30,
+    "categoria": 1,
+    "imagem_principal": "",
+    "ativo": true,
+    "destaque": true,
+    "criado_em": "2026-05-31T20:15:18.219Z"
+  }
+},
+{
+  "model": "produtos.produto",
+  "pk": 3,
+  "fields": {
+    "nome": "Camiseta Básica Premium",
+    "slug": "camiseta-basica-premium",
+    "descricao": "Camiseta 100% algodão, corte moderno, disponível em várias cores. Conforto e estilo para o dia a dia.",
+    "preco": "59.90",
+    "preco_promocional": "39.90",
+    "estoque": 50,
+    "categoria": 2,
+    "imagem_principal": "",
+    "ativo": true,
+    "destaque": false,
+    "criado_em": "2026-05-31T20:15:18.225Z"
+  }
+},
+{
+  "model": "produtos.produto",
+  "pk": 4,
+  "fields": {
+    "nome": "Kit Temperos Gourmet",
+    "slug": "kit-temperos-gourmet",
+    "descricao": "Kit com 6 temperos artesanais selecionados para elevar o sabor das suas receitas.",
+    "preco": "45.00",
+    "preco_promocional": null,
+    "estoque": 20,
+    "categoria": 3,
+    "imagem_principal": "",
+    "ativo": true,
+    "destaque": true,
+    "criado_em": "2026-05-31T20:15:18.230Z"
+  }
+},
+{
+  "model": "produtos.produto",
+  "pk": 5,
+  "fields": {
+    "nome": "Luminária de Mesa LED",
+    "slug": "luminaria-mesa-led",
+    "descricao": "Luminária LED com 3 níveis de intensidade, porta USB lateral e design moderno para seu escritório.",
+    "preco": "89.90",
+    "preco_promocional": "69.90",
+    "estoque": 25,
+    "categoria": 4,
+    "imagem_principal": "",
+    "ativo": true,
+    "destaque": true,
+    "criado_em": "2026-05-31T20:15:18.236Z"
+  }
+},
+{
+  "model": "produtos.produto",
+  "pk": 6,
+  "fields": {
+    "nome": "Bola de Futebol Campo",
+    "slug": "bola-futebol-campo",
+    "descricao": "Bola oficial tamanho 5, material sintético resistente, ideal para jogos em campo gramado.",
+    "preco": "79.90",
+    "preco_promocional": null,
+    "estoque": 40,
+    "categoria": 5,
+    "imagem_principal": "",
+    "ativo": true,
+    "destaque": false,
+    "criado_em": "2026-05-31T20:15:18.241Z"
+  }
+}
+]
