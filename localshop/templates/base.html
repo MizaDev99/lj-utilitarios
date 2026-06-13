@@ -20,23 +20,12 @@
 </head>
 <body>
 
-<!-- Config do Firebase lida pelo firebase.js via data-* -->
-<div id="firebase-config" style="display:none"
-     data-api-key="{{ firebase_config.apiKey }}"
-     data-auth-domain="{{ firebase_config.authDomain }}"
-     data-project-id="{{ firebase_config.projectId }}"
-     data-storage-bucket="{{ firebase_config.storageBucket }}"
-     data-messaging-sender-id="{{ firebase_config.messagingSenderId }}"
-     data-app-id="{{ firebase_config.appId }}">
-</div>
-
 <script>
 const CSRF_TOKEN = '{{ csrf_token }}';
 const USER_LOGGED_IN = {% if request.user.is_authenticated %}true{% else %}false{% endif %};
 const CURRENT_USER = {% if request.user.is_authenticated %}{
-    "name":      "{{ request.user.get_full_name|default:request.user.username|escapejs }}",
-    "email":     "{{ request.user.email|escapejs }}",
-    "photo_url": "{% if request.user.perfilcliente.foto_url %}{{ request.user.perfilcliente.foto_url|escapejs }}{% endif %}"
+    "name":  "{{ request.user.get_full_name|default:request.user.username|escapejs }}",
+    "email": "{{ request.user.email|escapejs }}"
 }{% else %}null{% endif %};
 </script>
 
@@ -84,22 +73,11 @@ const CURRENT_USER = {% if request.user.is_authenticated %}{
 
             <div class="auth-area" id="auth-area">
                 {% if request.user.is_authenticated %}
-                <a href="{% url 'autenticacao:perfil' %}" class="user-btn" id="user-btn">
-                    {% if request.user.perfilcliente.foto_url %}
-                    <img src="{{ request.user.perfilcliente.foto_url }}" alt="{{ request.user.get_full_name }}" class="user-avatar" id="user-avatar">
-                    {% else %}
-                    <div class="user-avatar-placeholder" id="user-avatar">{{ request.user.get_full_name|first|upper|default:request.user.username|first|upper }}</div>
-                    {% endif %}
-                    <span class="user-name" id="user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
-                </a>
-                <button class="btn-logout" id="btn-logout" type="button">Sair</button>
-                {% else %}
-                <button class="btn-google-login" id="btn-google-login"
-                        type="button" data-google-login data-next="/"
-                        title="Ao entrar, coletamos nome, e-mail e foto do seu perfil Google conforme nossa Política de Privacidade.">
-                    <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                    Entrar
-                </button>
+                <span class="user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
+                <form method="post" action="{% url 'painel:logout' %}" style="display:inline; margin:0;">
+                    {% csrf_token %}
+                    <button class="btn-logout" type="submit" style="background:none; border:none; cursor:pointer; font:inherit;">Sair</button>
+                </form>
                 {% endif %}
             </div>
         </div>
@@ -113,7 +91,7 @@ const CURRENT_USER = {% if request.user.is_authenticated %}{
                 <li>
                     <a href="{% url 'produtos:lista' %}?categoria={{ cat.slug }}"
                        class="nav-cat-link {% if request.GET.categoria == cat.slug %}ativo{% endif %}">
-                        {% if cat.icone_emoji %}{{ cat.icone_emoji }} {% endif %}{{ cat.nome }}
+                        {% if cat.icone %}{{ cat.icone }} {% endif %}{{ cat.nome }}
                     </a>
                 </li>
                 {% endfor %}
@@ -159,15 +137,12 @@ const CURRENT_USER = {% if request.user.is_authenticated %}{
                     <li><a href="{% url 'core:homepage' %}">Início</a></li>
                     <li><a href="{% url 'produtos:lista' %}">Produtos</a></li>
                     <li><a href="{% url 'carrinho:ver' %}">Carrinho</a></li>
-                    {% if request.user.is_authenticated %}<li><a href="{% url 'autenticacao:perfil' %}">Meu Perfil</a></li>{% endif %}
                 </ul>
             </div>
             <div>
-                <h4 class="footer-titulo">Legal</h4>
+                <h4 class="footer-titulo">Acesso</h4>
                 <ul class="footer-links">
-                    <li><a href="{% url 'core:privacidade' %}">🔒 Privacidade</a></li>
-                    <li><a href="{% url 'core:termos' %}">📋 Termos de Uso</a></li>
-                    {% if request.user.is_authenticated %}<li><a href="{% url 'autenticacao:meus_dados' %}">📊 Meus Dados</a></li>{% endif %}
+                    <li><a href="{% url 'painel:login' %}">🔑 Painel Admin</a></li>
                 </ul>
             </div>
             {% if config.whatsapp_numero %}
@@ -216,13 +191,11 @@ const CURRENT_USER = {% if request.user.is_authenticated %}{
         </p>
         <div class="cookie-actions">
             <button onclick="aceitarCookies()" class="btn-cookie-aceitar">Aceitar</button>
-            <a href="/privacidade/" class="btn-cookie-saibamais">Saiba mais →</a>
         </div>
     </div>
 </div>
 
 <script src="{% static 'js/carrinho.js' %}"></script>
-<script type="module" src="{% static 'js/firebase.js' %}"></script>
 {% block extra_js %}{% endblock %}
 
 <script>
@@ -235,7 +208,6 @@ const CURRENT_USER = {% if request.user.is_authenticated %}{
 function aceitarCookies() {
     localStorage.setItem('lgpd_aceito', 'true');
     document.getElementById('cookie-banner').style.display = 'none';
-    fetch('/log-cookies/', { method: 'POST', headers: { 'X-CSRFToken': CSRF_TOKEN } }).catch(() => {});
 }
 
 /* Mobile search toggle */
