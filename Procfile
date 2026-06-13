@@ -1,1 +1,1 @@
-web: gunicorn localshop.wsgi --chdir localshop --bind 0.0.0.0:8000
+web: cd localshop && python manage.py migrate --run-syncdb && python manage.py collectstatic --noinput && gunicorn localshop.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120

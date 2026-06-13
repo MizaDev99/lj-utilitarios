@@ -57,12 +57,32 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'localshop.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Em produção, usa DATABASE_URL do Railway (PostgreSQL).
+# Em desenvolvimento, cai para SQLite automaticamente.
+_db_url = os.getenv('DATABASE_URL', '')
+if _db_url:
+    import re
+    _m = re.match(r'postgresql(?:\+psycopg2)?://([^:]+):([^@]+)@([^:/]+):?(\d*)/(.*)', _db_url)
+    if _m:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'USER':     _m.group(1),
+                'PASSWORD': _m.group(2),
+                'HOST':     _m.group(3),
+                'PORT':     _m.group(4) or '5432',
+                'NAME':     _m.group(5),
+            }
+        }
+    else:
+        raise RuntimeError(f'DATABASE_URL inválida: {_db_url!r}')
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
