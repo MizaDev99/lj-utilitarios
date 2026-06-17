@@ -6,10 +6,18 @@
 {% block content %}
 
 <!-- HERO -->
+{% if config.banner_principal %}
+<div style="width:100%;max-height:420px;overflow:hidden;line-height:0;">
+    <img src="{{ config.banner_principal.url }}" alt="{{ config.nome_loja }}"
+         style="width:100%;max-height:420px;object-fit:cover;display:block;">
+</div>
+{% endif %}
 <section class="hero">
     <div class="container">
         <h1 class="hero-titulo">{{ config.texto_banner|default:'Produtos para o seu dia a dia' }}</h1>
-        <p class="hero-sub">{{ config.subtexto_banner|default:'Qualidade e conveniência com entrega rápida.' }}</p>
+        {% if config.cidade_base %}
+        <p class="hero-sub">📍 {{ config.cidade_base }}</p>
+        {% endif %}
         <div class="hero-actions">
             <a href="{% url 'produtos:lista' %}" class="btn btn-primary btn-lg">Ver Catálogo</a>
             {% if config.whatsapp_numero %}

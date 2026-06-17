@@ -62,14 +62,16 @@
             <p class="estoque-esgotado">✕ Produto esgotado</p>
             {% endif %}
 
-            {% if config.cidades_entrega %}
+            {% with cidades=config.get_cidades_lista %}
+            {% if cidades %}
             <div class="entrega-card">
                 <div class="entrega-card-titulo">📍 Entrega disponível em</div>
-                {% for cidade in config.cidades_entrega.split %}
+                {% for cidade in cidades %}
                 <div>• {{ cidade }}</div>
                 {% endfor %}
             </div>
             {% endif %}
+            {% endwith %}
 
             <!-- WhatsApp CTA (principal) -->
             {% if config.whatsapp_numero %}

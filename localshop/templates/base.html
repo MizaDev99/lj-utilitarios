@@ -25,9 +25,7 @@ const CSRF_TOKEN = '{{ csrf_token }}';
 <header class="header">
     <div class="container header-inner">
         <a href="{% url 'core:homepage' %}" class="logo-link">
-            {% if config.logo_navbar %}
-                <img src="{{ config.logo_navbar.url }}" alt="{{ config.nome_loja }}" style="height:38px;width:auto;object-fit:contain;">
-            {% elif config.logo %}
+            {% if config.logo %}
                 <img src="{{ config.logo.url }}" alt="{{ config.nome_loja }}" style="height:38px;width:auto;object-fit:contain;">
             {% else %}
                 <span class="logo-text">{{ config.nome_loja }}</span>
@@ -97,7 +95,6 @@ const CSRF_TOKEN = '{{ csrf_token }}';
         <div class="footer-grid">
             <div>
                 <div class="footer-logo">{{ config.nome_loja }}</div>
-                <p class="footer-desc">Produtos de qualidade com entrega local rápida.</p>
                 {% if config.cidade_base %}<p class="footer-desc">📍 {{ config.cidade_base }}</p>{% endif %}
             </div>
             <div>
@@ -127,7 +124,7 @@ const CSRF_TOKEN = '{{ csrf_token }}';
             {% endif %}
         </div>
         <div class="footer-bottom">
-            <p>© 2025 {{ config.nome_loja }}</p>
+            <p>{% now "Y" %} {{ config.nome_loja }}</p>
         </div>
     </div>
 </footer>
