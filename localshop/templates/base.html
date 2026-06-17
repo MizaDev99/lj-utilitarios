@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#3d1f8c">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#F7F4EF">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -14,7 +12,7 @@
     <title>{% block title %}{{ config.nome_loja }}{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {% block extra_head %}{% endblock %}
 </head>
@@ -22,22 +20,16 @@
 
 <script>
 const CSRF_TOKEN = '{{ csrf_token }}';
-const USER_LOGGED_IN = {% if request.user.is_authenticated %}true{% else %}false{% endif %};
-const CURRENT_USER = {% if request.user.is_authenticated %}{
-    "name":  "{{ request.user.get_full_name|default:request.user.username|escapejs }}",
-    "email": "{{ request.user.email|escapejs }}"
-}{% else %}null{% endif %};
 </script>
 
 <header class="header">
     <div class="container header-inner">
         <a href="{% url 'core:homepage' %}" class="logo-link">
             {% if config.logo_navbar %}
-                <img src="{{ config.logo_navbar.url }}" alt="{{ config.nome_loja }}" style="height:40px; width:auto; object-fit:contain;">
+                <img src="{{ config.logo_navbar.url }}" alt="{{ config.nome_loja }}" style="height:38px;width:auto;object-fit:contain;">
             {% elif config.logo %}
-                <img src="{{ config.logo.url }}" alt="{{ config.nome_loja }}" style="height:40px; width:auto; object-fit:contain;">
+                <img src="{{ config.logo.url }}" alt="{{ config.nome_loja }}" style="height:38px;width:auto;object-fit:contain;">
             {% else %}
-                <div class="gem">L</div>
                 <span class="logo-text">{{ config.nome_loja }}</span>
             {% endif %}
         </a>
@@ -51,7 +43,6 @@ const CURRENT_USER = {% if request.user.is_authenticated %}{
             <input type="text" name="q" class="search-input" placeholder="Buscar produtos..." value="{{ request.GET.q }}">
         </form>
 
-        <!-- Botão de busca (visível somente mobile) -->
         <button type="button" class="search-toggle-btn" id="search-toggle-btn" aria-label="Buscar">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -70,20 +61,10 @@ const CURRENT_USER = {% if request.user.is_authenticated %}{
                 <span class="cart-badge" id="cart-badge" style="display:none">0</span>
                 {% endif %}
             </a>
-
-            <div class="auth-area" id="auth-area">
-                {% if request.user.is_authenticated %}
-                <span class="user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
-                <form method="post" action="{% url 'painel:logout' %}" style="display:inline; margin:0;">
-                    {% csrf_token %}
-                    <button class="btn-logout" type="submit" style="background:none; border:none; cursor:pointer; font:inherit;">Sair</button>
-                </form>
-                {% endif %}
-            </div>
         </div>
     </div>
 
-    <nav class="nav-cats">
+    <nav class="nav-cats" aria-label="Categorias">
         <div class="container">
             <ul class="nav-cats-list">
                 <li><a href="{% url 'produtos:lista' %}" class="nav-cat-link {% if request.path == '/produtos/' and not request.GET.categoria %}ativo{% endif %}">Todos</a></li>
@@ -112,15 +93,11 @@ const CURRENT_USER = {% if request.user.is_authenticated %}{
 </main>
 
 <footer class="footer">
-    <div class="aurora-bar aurora-bar-full"></div>
     <div class="container">
         <div class="footer-grid">
             <div>
-                <div class="footer-logo">
-                    <div class="gem" style="width:32px; height:32px; border-radius:9px; font-size:14px; animation:none;">L</div>
-                    {{ config.nome_loja }}
-                </div>
-                <p class="footer-desc">Utilitários de qualidade com entrega local rápida.</p>
+                <div class="footer-logo">{{ config.nome_loja }}</div>
+                <p class="footer-desc">Produtos de qualidade com entrega local rápida.</p>
                 {% if config.cidade_base %}<p class="footer-desc">📍 {{ config.cidade_base }}</p>{% endif %}
             </div>
             <div>
@@ -132,48 +109,39 @@ const CURRENT_USER = {% if request.user.is_authenticated %}{
                 </ul>
             </div>
             <div>
-                <h4 class="footer-titulo">Links</h4>
+                <h4 class="footer-titulo">Navegação</h4>
                 <ul class="footer-links">
                     <li><a href="{% url 'core:homepage' %}">Início</a></li>
                     <li><a href="{% url 'produtos:lista' %}">Produtos</a></li>
                     <li><a href="{% url 'carrinho:ver' %}">Carrinho</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="footer-titulo">Acesso</h4>
-                <ul class="footer-links">
-                    <li><a href="{% url 'painel:login' %}">🔑 Painel Admin</a></li>
+                    <li><a href="{% url 'painel:login' %}">Painel Admin</a></li>
                 </ul>
             </div>
             {% if config.whatsapp_numero %}
             <div>
                 <h4 class="footer-titulo">Contato</h4>
-                <a href="https://wa.me/55{{ config.whatsapp_numero }}" class="footer-whatsapp" target="_blank">💬 WhatsApp</a>
+                <a href="https://wa.me/55{{ config.whatsapp_numero }}" class="footer-whatsapp" target="_blank" rel="noopener">
+                    💬 WhatsApp
+                </a>
             </div>
             {% endif %}
         </div>
         <div class="footer-bottom">
-            <p>© 2025 {{ config.nome_loja }} · Três Rios, RJ</p>
+            <p>© 2025 {{ config.nome_loja }}</p>
         </div>
     </div>
 </footer>
 
-<!-- Toast de feedback -->
-<div id="toast-login" style="
-    display:none; position:fixed; bottom:2rem; left:50%;
-    transform:translateX(-50%); z-index:10000;
-    padding:1rem 2rem; border-radius:12px;
-    color:#fff; font-size:14px; font-weight:500;
-    box-shadow: 0 8px 32px rgba(61,31,140,0.2);
-    white-space:nowrap; pointer-events:none;
-    background:var(--cor-primaria);
-    font-family:'Inter',sans-serif;">
+<!-- Cookie banner -->
+<div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Aviso de cookies">
+    <p class="cookie-texto">🍪 Usamos <strong>cookies essenciais</strong> para o funcionamento do carrinho e da sessão.</p>
+    <button onclick="aceitarCookies()" class="btn-cookie-aceitar">Aceitar</button>
 </div>
 
 <!-- Search overlay (mobile) -->
 <div class="search-overlay" id="search-overlay" role="dialog" aria-label="Buscar">
     <button type="button" class="search-overlay-close" id="search-overlay-close">✕ Fechar</button>
-    <form action="{% url 'produtos:lista' %}" method="get" style="width:100%;">
+    <form action="{% url 'produtos:lista' %}" method="get">
         <input type="text" name="q" class="search-input" placeholder="Buscar produtos..." autofocus>
         <button type="submit" class="search-btn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -183,25 +151,13 @@ const CURRENT_USER = {% if request.user.is_authenticated %}{
     </form>
 </div>
 
-<!-- Cookie banner -->
-<div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Aviso de cookies">
-    <div class="cookie-inner">
-        <p class="cookie-texto">
-            🍪 Usamos <strong>cookies essenciais</strong> para o funcionamento do carrinho e da sessão.
-        </p>
-        <div class="cookie-actions">
-            <button onclick="aceitarCookies()" class="btn-cookie-aceitar">Aceitar</button>
-        </div>
-    </div>
-</div>
-
 <script src="{% static 'js/carrinho.js' %}"></script>
 {% block extra_js %}{% endblock %}
 
 <script>
-(function() {
+(function(){
     if (!localStorage.getItem('lgpd_aceito')) {
-        const b = document.getElementById('cookie-banner');
+        var b = document.getElementById('cookie-banner');
         if (b) b.style.display = 'flex';
     }
 })();
@@ -210,25 +166,21 @@ function aceitarCookies() {
     document.getElementById('cookie-banner').style.display = 'none';
 }
 
-/* Mobile search toggle */
-const toggleBtn = document.getElementById('search-toggle-btn');
-const overlay   = document.getElementById('search-overlay');
-const closeBtn  = document.getElementById('search-overlay-close');
+var toggleBtn = document.getElementById('search-toggle-btn');
+var overlay   = document.getElementById('search-overlay');
+var closeBtn  = document.getElementById('search-overlay-close');
 if (toggleBtn && overlay) {
-    toggleBtn.addEventListener('click', () => { overlay.classList.add('open'); overlay.querySelector('input')?.focus(); });
-    closeBtn?.addEventListener('click', () => overlay.classList.remove('open'));
-    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') overlay.classList.remove('open'); });
+    toggleBtn.addEventListener('click', function(){ overlay.classList.add('open'); overlay.querySelector('input').focus(); });
+    closeBtn && closeBtn.addEventListener('click', function(){ overlay.classList.remove('open'); });
+    overlay.addEventListener('click', function(e){ if (e.target === overlay) overlay.classList.remove('open'); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') overlay.classList.remove('open'); });
 }
 
-/* Intersection Observer — fade-up nos cards */
-document.addEventListener('DOMContentLoaded', function() {
-    const io = new IntersectionObserver(function(entries) {
-        entries.forEach(function(e) {
-            if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
-        });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.prod-card, .cat-card').forEach(function(el) { io.observe(el); });
+/* Build WhatsApp links from data attributes */
+document.querySelectorAll('[data-wpp-text]').forEach(function(el) {
+    var base = el.getAttribute('data-wpp-base');
+    var text = el.getAttribute('data-wpp-text');
+    if (base && text) el.href = base + '?text=' + encodeURIComponent(text);
 });
 </script>
 </body>

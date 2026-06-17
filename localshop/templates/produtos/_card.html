@@ -1,11 +1,10 @@
 <article class="prod-card">
-    <div class="aurora-bar"></div>
     <a href="{% url 'produtos:detalhe' produto.slug %}" class="prod-card-img-link">
         <div class="prod-card-img-wrap">
             {% if produto.imagem_principal %}
             <img src="{{ produto.imagem_principal.url }}" alt="{{ produto.nome }}" class="prod-card-img" loading="lazy">
             {% else %}
-            <div class="prod-card-no-img">🔧</div>
+            <div class="prod-card-no-img">📦</div>
             {% endif %}
             {% if produto.tem_promocao %}
             <span class="badge-oferta">-{{ produto.percentual_desconto }}%</span>
@@ -18,9 +17,7 @@
         {% if produto.categoria %}
         <span class="prod-cat-pill">{{ produto.categoria.icone }} {{ produto.categoria.nome }}</span>
         {% endif %}
-        <a href="{% url 'produtos:detalhe' produto.slug %}">
-            <h3 class="prod-card-nome">{{ produto.nome }}</h3>
-        </a>
+        <a href="{% url 'produtos:detalhe' produto.slug %}" class="prod-card-nome">{{ produto.nome }}</a>
         <div class="prod-card-preco">
             {% if produto.tem_promocao %}
             <span class="preco-de">R$ {{ produto.preco }}</span>
@@ -29,14 +26,16 @@
             <span class="preco-por">R$ {{ produto.preco }}</span>
             {% endif %}
         </div>
-        {% if produto.estoque > 0 %}
-        <form method="post" action="{% url 'carrinho:adicionar' produto.pk %}" class="add-cart-form">
-            {% csrf_token %}
-            <input type="hidden" name="quantidade" value="1">
-            <button type="submit" class="btn-add-cart">+ Adicionar</button>
-        </form>
-        {% else %}
-        <button class="btn-add-cart" disabled>Esgotado</button>
+        {% if config.whatsapp_numero and produto.estoque > 0 %}
+        <a href="https://wa.me/55{{ config.whatsapp_numero }}"
+           data-wpp-base="https://wa.me/55{{ config.whatsapp_numero }}"
+           data-wpp-text="Olá! Tenho interesse no produto: {{ produto.nome }} - R$ {{ produto.preco_atual }}"
+           class="btn-wpp-card"
+           target="_blank" rel="noopener">
+            💬 Tenho Interesse
+        </a>
+        {% elif produto.estoque == 0 %}
+        <button class="btn-wpp-card" disabled style="opacity:.4;cursor:not-allowed;">Esgotado</button>
         {% endif %}
     </div>
 </article>

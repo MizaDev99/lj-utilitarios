@@ -1,62 +1,61 @@
 {% extends 'base.html' %}
 
-{% block title %}{% if categoria_atual %}{{ categoria_atual.nome }} — {% endif %}{% if busca %}{{ busca }} — {% endif %}Produtos — {{ config.nome_loja }}{% endblock %}
+{% block title %}{% if categoria_atual %}{{ categoria_atual.nome }} — {% endif %}{% if busca %}"{{ busca }}" — {% endif %}Produtos — {{ config.nome_loja }}{% endblock %}
 
 {% block content %}
-<div class="container" style="padding-top:32px; padding-bottom:64px;">
-    <div class="listagem-layout">
+<div class="container" style="padding-top:40px;padding-bottom:80px;">
 
-        <aside class="sidebar-filtros">
-            <div class="aurora-bar aurora-bar-1"></div>
-            <div class="sidebar-filtros-body">
-                <h3 class="filtros-h">Categorias</h3>
-                <ul class="filtros-lista">
-                    <li>
-                        <a href="{% url 'produtos:lista' %}{% if busca %}?q={{ busca }}{% endif %}"
-                           class="filtro-link {% if not categoria_atual %}ativo{% endif %}">🏷️ Todos</a>
-                    </li>
-                    {% for cat in categorias %}
-                    <li>
-                        <a href="{% url 'produtos:lista' %}?categoria={{ cat.slug }}{% if busca %}&q={{ busca }}{% endif %}"
-                           class="filtro-link {% if categoria_atual.slug == cat.slug %}ativo{% endif %}">
-                            {{ cat.icone_emoji|default:'•' }} {{ cat.nome }}
-                        </a>
-                    </li>
-                    {% endfor %}
-                </ul>
-
-                <h3 class="filtros-h" style="margin-top:24px;">Ordenar</h3>
-                <ul class="filtros-lista">
-                    <li><a href="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}" class="filtro-link {% if not ordem %}ativo{% endif %}">Relevância</a></li>
-                    <li><a href="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}ordem=mais_novo" class="filtro-link {% if ordem == 'mais_novo' %}ativo{% endif %}">Mais novos</a></li>
-                    <li><a href="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}ordem=menor_preco" class="filtro-link {% if ordem == 'menor_preco' %}ativo{% endif %}">Menor preço</a></li>
-                    <li><a href="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}ordem=maior_preco" class="filtro-link {% if ordem == 'maior_preco' %}ativo{% endif %}">Maior preço</a></li>
-                </ul>
-            </div>
-        </aside>
-
-        <div class="listagem-main">
-            <div class="listagem-header">
-                <h1 class="listagem-titulo">
-                    {% if busca %}Resultados: "{{ busca }}"
-                    {% elif categoria_atual %}{{ categoria_atual.icone_emoji }} {{ categoria_atual.nome }}
-                    {% else %}Todos os Produtos{% endif %}
-                </h1>
-                <span class="listagem-count">{{ produtos|length }} produto{{ produtos|length|pluralize }}</span>
-            </div>
-
-            {% if produtos %}
-            <div class="produtos-grid">
-                {% for produto in produtos %}{% include 'produtos/_card.html' %}{% endfor %}
-            </div>
+    <div class="listagem-header">
+        <h1 class="listagem-titulo">
+            {% if busca %}
+                "{{ busca }}"
+            {% elif categoria_atual %}
+                {% if categoria_atual.icone %}{{ categoria_atual.icone }} {% endif %}{{ categoria_atual.nome }}
             {% else %}
-            <div class="empty-state">
-                <p style="font-size:48px; margin-bottom:16px;">😕</p>
-                <p style="font-size:17px; margin-bottom:20px;">Nenhum produto encontrado.</p>
-                <a href="{% url 'produtos:lista' %}" class="btn btn-primary">Ver todos os produtos</a>
-            </div>
+                Produtos
             {% endif %}
+        </h1>
+        <span class="listagem-count">{{ produtos|length }} produto{{ produtos|length|pluralize }}</span>
+    </div>
+
+    <!-- Filtros + Ordenação -->
+    <div class="filtros-bar">
+        <span class="filtros-titulo">Filtrar:</span>
+        <a href="{% url 'produtos:lista' %}{% if busca %}?q={{ busca }}{% endif %}"
+           class="filtro-btn {% if not categoria_atual %}ativo{% endif %}">Todos</a>
+        {% for cat in categorias %}
+        <a href="{% url 'produtos:lista' %}?categoria={{ cat.slug }}{% if busca %}&q={{ busca }}{% endif %}"
+           class="filtro-btn {% if categoria_atual.slug == cat.slug %}ativo{% endif %}">
+            {% if cat.icone %}{{ cat.icone }} {% endif %}{{ cat.nome }}
+        </a>
+        {% endfor %}
+
+        <div class="sort-wrap">
+            <select class="sort-select" onchange="window.location.href=this.value" aria-label="Ordenar">
+                <option value="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}"
+                    {% if not ordem %}selected{% endif %}>Relevância</option>
+                <option value="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}ordem=mais_novo"
+                    {% if ordem == 'mais_novo' %}selected{% endif %}>Mais novos</option>
+                <option value="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}ordem=menor_preco"
+                    {% if ordem == 'menor_preco' %}selected{% endif %}>Menor preço</option>
+                <option value="?{% if categoria_atual %}categoria={{ categoria_atual.slug }}&{% endif %}{% if busca %}q={{ busca }}&{% endif %}ordem=maior_preco"
+                    {% if ordem == 'maior_preco' %}selected{% endif %}>Maior preço</option>
+            </select>
         </div>
     </div>
+
+    {% if produtos %}
+    <div class="produtos-grid">
+        {% for produto in produtos %}{% include 'produtos/_card.html' %}{% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p style="font-size:48px;margin-bottom:16px;">🔍</p>
+        <h2>Nenhum produto encontrado</h2>
+        <p style="margin-bottom:24px;">Tente outra busca ou veja todos os produtos.</p>
+        <a href="{% url 'produtos:lista' %}" class="btn btn-primary">Ver todos os produtos</a>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}
