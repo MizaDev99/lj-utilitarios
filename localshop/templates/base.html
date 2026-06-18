@@ -117,7 +117,7 @@ const CSRF_TOKEN = '{{ csrf_token }}';
             {% if config.whatsapp_numero %}
             <div>
                 <h4 class="footer-titulo">Contato</h4>
-                <a href="https://wa.me/55{{ config.whatsapp_numero }}" class="footer-whatsapp" target="_blank" rel="noopener">
+                <a href="{{ config.whatsapp_url }}" class="footer-whatsapp" target="_blank" rel="noopener">
                     💬 WhatsApp
                 </a>
             </div>

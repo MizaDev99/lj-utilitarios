@@ -1,3 +1,4 @@
+import re
 from django.db import models
 
 
@@ -51,6 +52,13 @@ class Configuracao(models.Model):
 
     def __str__(self):
         return self.nome_loja
+
+    @property
+    def whatsapp_url(self):
+        numero = re.sub(r'\D', '', self.whatsapp_numero)
+        if numero and not numero.startswith('55'):
+            numero = '55' + numero
+        return f'https://wa.me/{numero}' if numero else ''
 
     def get_cidades_lista(self):
         if self.cidades_atendidas:

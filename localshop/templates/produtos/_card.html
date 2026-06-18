@@ -27,8 +27,8 @@
             {% endif %}
         </div>
         {% if config.whatsapp_numero and produto.estoque > 0 %}
-        <a href="https://wa.me/55{{ config.whatsapp_numero }}"
-           data-wpp-base="https://wa.me/55{{ config.whatsapp_numero }}"
+        <a href="{{ config.whatsapp_url }}"
+           data-wpp-base="{{ config.whatsapp_url }}"
            data-wpp-text="Olá! Tenho interesse no produto: {{ produto.nome }} - R$ {{ produto.preco_atual }}"
            class="btn-wpp-card"
            target="_blank" rel="noopener">
