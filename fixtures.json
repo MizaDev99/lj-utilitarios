@@ -21,15 +21,15 @@
   "model": "core.configuracao",
   "pk": 1,
   "fields": {
-    "nome_loja": "LocalShop",
-    "whatsapp_numero": "11999999999",
+    "nome_loja": "L&J UTILITARIOS",
+    "whatsapp_numero": "5524992429062",
     "whatsapp_mensagem_template": "🛒 *Novo Pedido #{{numero}}*\n\n👤 Cliente: {{nome}}\n📍 Cidade: {{cidade}}\n📞 Telefone: {{telefone}}\n🏠 Endereço: {{endereco}}\n\n*Itens:*\n{{lista_itens}}\n\n💰 Subtotal: R$ {{subtotal}}\n🚚 Frete: R$ {{frete}}\n💵 *Total: R$ {{total}}*\n\n📝 Obs: {{observacoes}}",
-    "cidade_base": "São Paulo",
-    "cidades_atendidas": "São Paulo, Guarulhos, Osasco, Santo André, São Bernardo do Campo",
+    "cidade_base": "Três Rios",
+    "cidades_atendidas": "Três Rios, Vassouras, Miguel Pereira, Paraíba do Sul",
     "logo": "",
     "cor_primaria": "#FF6B00",
     "banner_principal": "",
-    "texto_banner": "As melhores ofertas da sua cidade!",
+    "texto_banner": "Os melhores produtos para a sua casa!",
     "frete_fixo": "10.00",
     "frete_gratis_acima": "150.00"
   }
