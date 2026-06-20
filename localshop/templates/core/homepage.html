@@ -5,6 +5,19 @@
 
 {% block content %}
 
+<!-- SCROLL CROSSFADE -->
+<div class="scroll-section" id="ss-section">
+    <div class="sticky-stage">
+        <div class="ss-layer" id="ss-layer-cliente">
+            <img src="{% static 'img/cliente_chegando.png' %}" alt="Cliente chegando na loja">
+        </div>
+        <div class="ss-layer" id="ss-layer-loja">
+            <img src="{% static 'img/vista_loja.png' %}" alt="Vista da loja">
+        </div>
+        <div class="ss-caption" id="ss-caption">{{ config.nome_loja }}</div>
+    </div>
+</div>
+
 <!-- HERO -->
 {% if config.banner_principal %}
 <div style="width:100%;max-height:420px;overflow:hidden;line-height:0;">
@@ -91,4 +104,38 @@
 </section>
 {% endif %}
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    var section  = document.getElementById('ss-section');
+    var layerA   = document.getElementById('ss-layer-cliente');
+    var layerB   = document.getElementById('ss-layer-loja');
+    var caption  = document.getElementById('ss-caption');
+    if (!section) return;
+
+    var ticking = false;
+
+    function update() {
+        var rect       = section.getBoundingClientRect();
+        var scrollable = section.offsetHeight - window.innerHeight;
+        var progress   = Math.min(Math.max(-rect.top / scrollable, 0), 1);
+
+        layerA.style.opacity   = 1 - progress;
+        layerB.style.opacity   = progress;
+        layerA.style.transform = 'scale(' + (1 + progress * 0.15) + ')';
+        layerB.style.transform = 'scale(' + (1.1 - progress * 0.1) + ')';
+        caption.style.opacity  = progress > 0.85 ? (progress - 0.85) / 0.15 : 0;
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+        if (!ticking) { requestAnimationFrame(update); ticking = true; }
+    }, { passive: true });
+
+    update();
+})();
+</script>
 {% endblock %}
