@@ -264,9 +264,7 @@ button{font-family:inherit}
 @media(min-width:640px) and (max-width:1023px){.scroll-section{height:200vh}}
 /* mobile */
 @media(max-width:639px){
-  .scroll-section{height:140vh}
-  .sticky-stage{height:100vh;top:0;background:var(--cream)}
-  .ss-layer img{object-fit:contain;object-position:center}
+  .scroll-section{display:none}
 }
 
 /* ─── FADE-IN (IntersectionObserver) ─── */

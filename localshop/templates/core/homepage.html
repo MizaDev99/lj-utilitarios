@@ -115,6 +115,7 @@
 {% block extra_js %}
 <script>
 (function () {
+    if (window.innerWidth < 640) return;
     var section  = document.getElementById('ss-section');
     var layerA   = document.getElementById('ss-layer-cliente');
     var layerB   = document.getElementById('ss-layer-loja');
