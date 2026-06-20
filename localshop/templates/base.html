@@ -182,6 +182,7 @@ document.querySelectorAll('[data-wpp-text]').forEach(function(el) {
 /* ─── Card fade-in via IntersectionObserver ─── */
 (function () {
     if (!window.IntersectionObserver) return;
+    if (window.innerWidth < 640) return;
     var cards = document.querySelectorAll('.prod-card, .cat-card');
     if (!cards.length) return;
     var io = new IntersectionObserver(function (entries) {

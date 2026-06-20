@@ -265,6 +265,33 @@ button{font-family:inherit}
 /* mobile */
 @media(max-width:639px){
   .scroll-section{display:none}
+  /* nav pills */
+  .nav-cat-link{animation:bounce-in .5s ease backwards;border-radius:16px}
+  .nav-cats-list li:nth-child(1) .nav-cat-link{animation-delay:.05s}
+  .nav-cats-list li:nth-child(2) .nav-cat-link{animation-delay:.1s}
+  .nav-cats-list li:nth-child(3) .nav-cat-link{animation-delay:.15s}
+  .nav-cats-list li:nth-child(4) .nav-cat-link{animation-delay:.2s}
+  .nav-cats-list li:nth-child(5) .nav-cat-link{animation-delay:.25s}
+  .nav-cats-list li:nth-child(6) .nav-cat-link{animation-delay:.3s}
+  /* cards pop-in — 'both' mantém translateY(0) final, suprime rotação do :nth-child no mobile */
+  .prod-card{animation:pop-in .4s ease both}
+  .cat-card{animation:pop-in .4s ease backwards}
+  .prod-card:nth-child(1),.cat-card:nth-child(1){animation-delay:.1s}
+  .prod-card:nth-child(2),.cat-card:nth-child(2){animation-delay:.18s}
+  .prod-card:nth-child(3),.cat-card:nth-child(3){animation-delay:.26s}
+  .prod-card:nth-child(4),.cat-card:nth-child(4){animation-delay:.34s}
+  .prod-card:nth-child(5),.cat-card:nth-child(5){animation-delay:.42s}
+  .prod-card:nth-child(6),.cat-card:nth-child(6){animation-delay:.5s}
+}
+
+@keyframes bounce-in{
+  0%{opacity:0;transform:scale(0.5)}
+  60%{transform:scale(1.08)}
+  100%{opacity:1;transform:scale(1)}
+}
+@keyframes pop-in{
+  0%{opacity:0;transform:translateY(14px)}
+  100%{opacity:1;transform:translateY(0)}
 }
 
 /* ─── FADE-IN (IntersectionObserver) ─── */
