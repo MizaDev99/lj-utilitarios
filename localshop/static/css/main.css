@@ -231,6 +231,9 @@ button{font-family:inherit}
 .footer-whatsapp:hover{color:var(--wpp)}
 .footer-bottom{border-top:1px solid var(--gray-light);padding:16px 0;font-size:12px;color:var(--gray)}
 
+/* ─── MOBILE-ONLY ELEMENTS ─── */
+.mobile-stories-wrap{display:none}
+
 /* ─── COOKIE BANNER ─── */
 .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:var(--black);color:#fff;padding:16px 24px;display:none;align-items:center;justify-content:space-between;gap:16px;z-index:9999;flex-wrap:wrap}
 .cookie-texto{font-size:13px;line-height:1.5}
@@ -299,3 +302,59 @@ button{font-family:inherit}
 /* cat-card starts shifted down; prod-card only fades (rotation já definida via :nth-child) */
 .cat-card.io-hidden{transform:translateY(18px)}
 /* transition já inclui opacity nos seletores acima (.prod-card, .cat-card) */
+
+/* ─── STORY STACK — dark mobile theme ─── */
+@media(max-width:639px){
+  body{background:#0D0D0D;color:#ddd}
+  .header{background:#161616;border-bottom-color:#222}
+  .logo-text{color:#fff}
+  .search-wrap{background:#222;border-color:#333}
+  .search-input{color:#ddd}
+  .search-input::placeholder{color:#555}
+  .search-btn:hover{color:#ddd}
+  .cart-icon-btn{color:#6EE7B7}
+  .cart-badge{background:#6EE7B7;color:#0D0D0D}
+  /* hide default pill nav — stories section replaces it */
+  .nav-cats{display:none}
+  /* stories carrossel */
+  .mobile-stories-wrap{display:block;padding:14px 0;background:#0D0D0D;border-bottom:1px solid #1f1f1f}
+  .mobile-stories{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;padding:0 16px;-webkit-overflow-scrolling:touch}
+  .mobile-stories::-webkit-scrollbar{display:none}
+  .story-item{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;color:#888}
+  .story-circle{width:54px;height:54px;border-radius:50%;border:2px solid #6EE7B7;display:flex;align-items:center;justify-content:center;font-size:22px;background:#1a1a1a}
+  .story-nome{font-size:9px;font-weight:700;text-align:center;max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.5px;text-transform:uppercase}
+  /* hide desktop category cards — stories já mostram as categorias */
+  .categorias-section{display:none}
+  /* hero */
+  .hero{background:#161616;border-bottom-color:#222}
+  .hero-titulo{color:#fff}
+  .hero-sub{color:#666}
+  /* sections */
+  .section{background:#0D0D0D}
+  .section-alt{background:#0D0D0D}
+  .section+.section{border-top-color:#1f1f1f}
+  .section-titulo{color:#888}
+  .ver-mais{color:#666}
+  .ver-mais:hover{color:#6EE7B7}
+  /* feed: 1 coluna, cards horizontais */
+  .produtos-grid{grid-template-columns:1fr;gap:10px}
+  .prod-card{display:flex;align-items:center;gap:12px;background:#161616;border-radius:12px;padding:12px;box-shadow:none}
+  .prod-card:hover{transform:none!important;box-shadow:none;border-top-color:transparent}
+  .prod-card-img-link{flex-shrink:0}
+  .prod-card-img-wrap{width:70px;height:70px;aspect-ratio:unset;border-radius:8px;background:#222}
+  .prod-card-body{flex:1;padding:0;min-width:0}
+  .prod-cat-pill{display:none}
+  .prod-card-nome{font-size:13px;color:#ddd;margin-bottom:4px}
+  .prod-card-preco{margin-bottom:8px}
+  .preco-por{font-size:16px;font-weight:800;color:#6EE7B7}
+  .preco-de{font-size:11px;color:#555}
+  .btn-wpp-card{border-radius:24px;font-size:10px;padding:7px 10px}
+  .badge-oferta,.badge-esgotado{font-size:9px;top:4px;right:4px;padding:2px 5px}
+  /* footer */
+  .footer{background:#161616;border-top-color:#222;margin-top:32px}
+  .footer-logo{color:#fff}
+  .footer-desc{color:#555}
+  .footer-titulo{color:#555}
+  .footer-links a{color:#888}
+  .footer-bottom{border-top-color:#222;color:#444}
+}

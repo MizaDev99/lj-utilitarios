@@ -24,6 +24,22 @@
     </div>
 </div>
 
+<!-- MOBILE STORIES (oculto no desktop via CSS) -->
+<div class="mobile-stories-wrap">
+    <div class="mobile-stories">
+        <a href="{% url 'produtos:lista' %}" class="story-item">
+            <div class="story-circle">🛒</div>
+            <span class="story-nome">Todos</span>
+        </a>
+        {% for cat in categorias_nav %}
+        <a href="{% url 'produtos:lista' %}?categoria={{ cat.slug }}" class="story-item">
+            <div class="story-circle">{{ cat.icone|default:'🏷️' }}</div>
+            <span class="story-nome">{{ cat.nome }}</span>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
 <!-- HERO -->
 {% if config.banner_principal %}
 <div style="width:100%;max-height:420px;overflow:hidden;line-height:0;">
@@ -48,7 +64,7 @@
 
 <!-- CATEGORIAS -->
 {% if categorias %}
-<section class="section section-alt">
+<section class="section section-alt categorias-section">
     <div class="container">
         <div class="section-header">
             <span class="section-titulo">Categorias</span>
