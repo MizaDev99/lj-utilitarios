@@ -266,7 +266,7 @@ button{font-family:inherit}
 @media(max-width:639px){
   .scroll-section{height:180vh}
   .sticky-stage{height:100vh;top:0;background:var(--cream)}
-  .ss-layer img{object-fit:cover;object-position:center}
+  .ss-layer img{object-fit:contain;object-position:center}
 }
 
 /* ─── FADE-IN (IntersectionObserver) ─── */
