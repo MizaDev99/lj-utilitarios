@@ -111,7 +111,6 @@ const CSRF_TOKEN = '{{ csrf_token }}';
                     <li><a href="{% url 'core:homepage' %}">Início</a></li>
                     <li><a href="{% url 'produtos:lista' %}">Produtos</a></li>
                     <li><a href="{% url 'carrinho:ver' %}">Carrinho</a></li>
-                    <li><a href="{% url 'painel:login' %}">Painel Admin</a></li>
                 </ul>
             </div>
             {% if config.whatsapp_numero %}
@@ -193,9 +192,11 @@ document.querySelectorAll('[data-wpp-text]').forEach(function(el) {
             }
         });
     }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
-    cards.forEach(function (el) {
-        el.classList.add('io-hidden');
-        io.observe(el);
+    cards.forEach(function (el) { el.classList.add('io-hidden'); });
+    requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+            cards.forEach(function (el) { io.observe(el); });
+        });
     });
 })();
 </script>
