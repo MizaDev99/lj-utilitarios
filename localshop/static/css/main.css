@@ -8,6 +8,8 @@
   --wpp: #25D366;
   --wpp-dark: #1ebe5d;
   --red: #E63946;
+  --accent: #6e8fe0;
+  --accent-soft: rgba(110,143,224,0.07);
   --shadow: 0 4px 16px rgba(0,0,0,0.08);
   --shadow-card: 6px 8px 28px rgba(0,0,0,0.14);
 }
@@ -52,11 +54,12 @@ button{font-family:inherit}
 .nav-cat-link:hover,.nav-cat-link.ativo{color:var(--black);border-bottom-color:var(--black)}
 
 /* ─── BUTTONS ─── */
-.btn{display:inline-block;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:12px 28px;border:none;cursor:pointer;transition:opacity .15s,transform .1s;line-height:1;text-align:center}
+.btn{display:inline-block;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:12px 28px;border:none;cursor:pointer;transition:opacity .2s,transform .2s ease,box-shadow .2s;line-height:1;text-align:center}
 .btn-primary{background:var(--black);color:#fff}
-.btn-primary:hover{opacity:.8}
+.btn-primary:hover{opacity:.85;transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.22)}
+.btn:active{transform:scale(.97)!important;box-shadow:none!important}
 .btn-wpp{background:var(--wpp);color:#fff}
-.btn-wpp:hover{background:var(--wpp-dark)}
+.btn-wpp:hover{background:var(--wpp-dark);transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,211,102,0.35)}
 .btn-outline{background:transparent;color:var(--black);border:2px solid var(--black)}
 .btn-outline:hover{background:var(--black);color:#fff}
 .btn-block{display:block;width:100%}
@@ -67,11 +70,11 @@ button{font-family:inherit}
 @media(min-width:640px){.produtos-grid{grid-template-columns:repeat(2,1fr);gap:48px}}
 @media(min-width:1024px){.produtos-grid{grid-template-columns:repeat(3,1fr);gap:56px}}
 
-.prod-card{background:var(--white);padding:10px 10px 24px;box-shadow:var(--shadow-card);transition:transform .25s ease,box-shadow .25s ease;position:relative}
+.prod-card{background:var(--white);padding:10px 10px 24px;box-shadow:var(--shadow-card);transition:opacity .45s ease,transform .25s ease,box-shadow .25s ease;position:relative}
 .prod-card:nth-child(3n+1){transform:rotate(-1.5deg)}
 .prod-card:nth-child(3n+2){transform:rotate(.8deg)}
 .prod-card:nth-child(3n){transform:rotate(-0.5deg)}
-.prod-card:hover{transform:rotate(0deg) scale(1.03)!important;box-shadow:8px 12px 40px rgba(0,0,0,0.18);z-index:5}
+.prod-card:hover{transform:rotate(0deg) scale(1.03) translateY(-5px)!important;box-shadow:8px 16px 48px rgba(0,0,0,0.20);z-index:5}
 
 .prod-card-img-link{display:block}
 .prod-card-img-wrap{position:relative;width:100%;aspect-ratio:1;overflow:hidden;background:var(--cream)}
@@ -89,21 +92,22 @@ button{font-family:inherit}
 .preco-de{font-size:12px;color:var(--gray);text-decoration:line-through}
 .preco-por{font-size:19px;font-weight:800;color:var(--black)}
 
-.btn-wpp-card{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:var(--wpp);color:#fff;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:10px 12px;border:none;cursor:pointer;transition:background .15s}
-.btn-wpp-card:hover{background:var(--wpp-dark)}
+.btn-wpp-card{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:var(--wpp);color:#fff;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:10px 12px;border:none;cursor:pointer;transition:background .15s,transform .15s}
+.btn-wpp-card:hover{background:var(--wpp-dark);transform:translateY(-1px)}
+.btn-wpp-card:active{transform:scale(.97)}
 
 /* ─── CATEGORY CARDS ─── */
 .cats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:16px}
-.cat-card{background:var(--white);padding:24px 12px;text-align:center;color:var(--black);box-shadow:var(--shadow);border:1px solid var(--gray-light);display:block;transition:transform .2s,box-shadow .2s}
-.cat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-card)}
+.cat-card{background:var(--white);padding:24px 12px;text-align:center;color:var(--black);box-shadow:var(--shadow);border:1px solid var(--gray-light);display:block;transition:opacity .4s ease,transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.cat-card:hover{transform:translateY(-5px);box-shadow:0 10px 28px rgba(110,143,224,0.18);border-color:var(--accent)}
 .cat-card-icone{font-size:32px;margin-bottom:8px}
 .cat-card-nome{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray)}
 
 /* ─── SECTION HEADINGS ─── */
 .section-titulo{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:var(--gray)}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;gap:16px}
-.ver-mais{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gray);white-space:nowrap;transition:color .15s}
-.ver-mais:hover{color:var(--black)}
+.ver-mais{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gray);white-space:nowrap;transition:color .2s}
+.ver-mais:hover{color:var(--accent)}
 
 /* ─── HERO ─── */
 .hero{background:var(--white);padding:80px 0 64px;text-align:center;border-bottom:1px solid var(--gray-light)}
@@ -247,11 +251,20 @@ button{font-family:inherit}
 }
 
 /* ─── SCROLL CROSSFADE ─── */
-.scroll-section{height:250vh;position:relative}
-.sticky-stage{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--cream)}
+.scroll-section{height:250vh;position:relative;width:100vw;margin-left:calc(-50vw + 50%)}
+.sticky-stage{position:sticky;top:0;width:100%;height:100vh;overflow:hidden;background:linear-gradient(to bottom,var(--cream) 0%,rgba(110,143,224,0.06) 100%)}
 .ss-layer{position:absolute;inset:0;width:100%;height:100%;will-change:opacity,transform}
-.ss-layer img{width:100%;height:100%;object-fit:contain;display:block}
+.ss-layer img{width:100%;height:100%;object-fit:cover;display:block}
 #ss-layer-cliente{z-index:1;opacity:1;transform:scale(1)}
 #ss-layer-loja{z-index:2;opacity:0;transform:scale(1.1)}
-.ss-caption{position:absolute;bottom:40px;left:0;width:100%;text-align:center;z-index:3;color:var(--black);font-size:12px;font-weight:800;letter-spacing:4px;text-transform:uppercase;opacity:0;pointer-events:none;transition:none}
-@media(max-width:639px){.scroll-section{height:180vh}}
+.ss-caption{position:absolute;bottom:40px;left:0;width:100%;text-align:center;z-index:3;color:var(--white);font-size:12px;font-weight:800;letter-spacing:4px;text-transform:uppercase;opacity:0;pointer-events:none;text-shadow:0 1px 6px rgba(0,0,0,0.4)}
+/* tablet */
+@media(min-width:640px) and (max-width:1023px){.scroll-section{height:200vh}}
+/* mobile */
+@media(max-width:639px){.scroll-section{height:180vh}.ss-layer img{object-position:center}}
+
+/* ─── FADE-IN (IntersectionObserver) ─── */
+.io-hidden{opacity:0}
+/* cat-card starts shifted down; prod-card only fades (rotation já definida via :nth-child) */
+.cat-card.io-hidden{transform:translateY(18px)}
+/* transition já inclui opacity nos seletores acima (.prod-card, .cat-card) */

@@ -179,6 +179,25 @@ document.querySelectorAll('[data-wpp-text]').forEach(function(el) {
     var text = el.getAttribute('data-wpp-text');
     if (base && text) el.href = base + '?text=' + encodeURIComponent(text);
 });
+
+/* ─── Card fade-in via IntersectionObserver ─── */
+(function () {
+    if (!window.IntersectionObserver) return;
+    var cards = document.querySelectorAll('.prod-card, .cat-card');
+    if (!cards.length) return;
+    var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.remove('io-hidden');
+                io.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+    cards.forEach(function (el) {
+        el.classList.add('io-hidden');
+        io.observe(el);
+    });
+})();
 </script>
 </body>
 </html>
