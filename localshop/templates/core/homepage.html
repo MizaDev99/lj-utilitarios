@@ -9,10 +9,16 @@
 <div class="scroll-section" id="ss-section">
     <div class="sticky-stage">
         <div class="ss-layer" id="ss-layer-cliente">
-            <img src="{% static 'img/cliente_chegando.png' %}" alt="Cliente chegando na loja">
+            <picture>
+                <source media="(max-width:639px)" srcset="{% static 'img/cliente_chegando_mobile.png' %}">
+                <img src="{% static 'img/cliente_chegando.png' %}" alt="Cliente chegando na loja">
+            </picture>
         </div>
         <div class="ss-layer" id="ss-layer-loja">
-            <img src="{% static 'img/vista_loja.png' %}" alt="Vista da loja">
+            <picture>
+                <source media="(max-width:639px)" srcset="{% static 'img/vista_loja_mobile.png' %}">
+                <img src="{% static 'img/vista_loja.png' %}" alt="Vista da loja">
+            </picture>
         </div>
         <div class="ss-caption" id="ss-caption">{{ config.nome_loja }}</div>
     </div>
@@ -32,7 +38,7 @@
         <p class="hero-sub">📍 {{ config.cidade_base }}</p>
         {% endif %}
         <div class="hero-actions">
-            <a href="{% url 'produtos:lista' %}" class="btn btn-primary btn-lg">Ver Catálogo</a>
+            <a href="{% url 'produtos:lista' %}" class="btn btn-accent btn-lg">Ver Catálogo</a>
             {% if config.whatsapp_numero %}
             <a href="{{ config.whatsapp_url }}" class="btn btn-wpp btn-lg" target="_blank" rel="noopener">💬 WhatsApp</a>
             {% endif %}
