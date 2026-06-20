@@ -264,8 +264,8 @@ button{font-family:inherit}
 @media(min-width:640px) and (max-width:1023px){.scroll-section{height:200vh}}
 /* mobile */
 @media(max-width:639px){
-  .scroll-section{height:180vh}
-  .sticky-stage{background:var(--cream)}
+  .scroll-section{height:140vh}
+  .sticky-stage{height:70vh;top:15vh;background:var(--cream)}
   .ss-layer img{object-fit:contain;object-position:center}
 }
 
